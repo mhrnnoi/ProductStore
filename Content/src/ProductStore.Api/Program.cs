@@ -1,3 +1,4 @@
+using ProductStore.Api;
 using ProductStore.Application;
 using ProductStore.Infrastructure;
 
@@ -5,15 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication()
                 .AddInfrastructure()
-                .AddApplication();
+                .AddPresentation();
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
-app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

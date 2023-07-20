@@ -30,9 +30,14 @@ public class ProductRepository : IProductRepository
 
     public async Task<bool> IsEmailAndDateUniqueAsync(string email, DateTime date)
     {
-        return true ? await _context.AnyAsync(
+        var isNotUnique = await _context.AnyAsync(
                 x => x.ManufactureEmail == email &&
-                        x.ProduceDate == date) : false;
+                        x.ProduceDate == date);
+        if (isNotUnique)
+        {
+            return false;
+        } 
+        return true;
     }
 
     public void Remove(Product entity)
