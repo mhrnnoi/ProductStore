@@ -1,9 +1,11 @@
+using ProductStore.Application;
+using ProductStore.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddApplication()
+                .AddInfrastructure()
+                .AddApplication();
 
 var app = builder.Build();
 
