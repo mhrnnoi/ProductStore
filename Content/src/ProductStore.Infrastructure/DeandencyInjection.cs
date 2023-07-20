@@ -1,7 +1,5 @@
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Infrastructure.Persistence;
 using ProductStore.Infrastructure.Persistence.DataContext;
@@ -15,7 +13,7 @@ public static class depandencyInjection
 
         services.AddDbContext<AppDbContext>(Options =>
         {
-            Options.UseSqlServer("");
+            Options.UseSqlServer("Server=localhost;Database=Master;User Id=MEHRAN-PC'\'Lion;Password=Mehrancsharp6690;");
         });
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
