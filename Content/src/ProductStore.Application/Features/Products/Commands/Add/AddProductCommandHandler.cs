@@ -27,6 +27,12 @@ public class AddProductCommandHandler :
     public async Task<ErrorOr<Product>> Handle(AddProductCommand request, CancellationToken cancellationToken)
     {
         var product = _mapper.Map<Product>(request);
+        var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, 
+                                                        request.ProduceDate);
+        if (!isUniqueByEmailAndDate)
+        {
+            return Error.Failure();
+        }
         _productRepository.Add(product);
         await _unitOfWork.SaveChangesAsync();
 

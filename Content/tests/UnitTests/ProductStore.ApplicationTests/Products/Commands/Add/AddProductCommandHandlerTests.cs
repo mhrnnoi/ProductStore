@@ -1,3 +1,4 @@
+using ErrorOr;
 using FluentAssertions;
 using MapsterMapper;
 using Moq;
@@ -26,7 +27,7 @@ public class AddProductCommandHandlerTests
             true,
             "mehran",
             "16511",
-            DateTime.Now,
+            DateTime.Now.Date,
             "mehran"
             );
 
@@ -38,12 +39,15 @@ public class AddProductCommandHandlerTests
 
 
     [Fact]
-    public async void Handle_ShouldReturnCreatedProduct_WhenInputIsValid_And_HaveUniqueEmailAndDate()
+    public async void Handle_ShouldReturnCreatedProduct_WhenHaveUniqueEmailAndDate()
     {
         //Arrange
         var product = new Product();
         _mapperMock.Setup(x => x.Map<Product>(It.IsAny<AddProductCommand>()))
                     .Returns(product);
+        _productRepositoryMock.Setup(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
+                                                                        _command.ProduceDate))
+                               .ReturnsAsync(true);
 
         _productRepositoryMock.Setup(x => x.Add(It.IsAny<Product>()));
 
@@ -53,13 +57,27 @@ public class AddProductCommandHandlerTests
         result.IsError.Should().NotBe(true);
         result.Value.Should().Be(product);
     }
-    public void Handle_ShouldReturnBadRequest_WhenInputIsValid_but_NoUniqueEmailAndDate()
+    [Fact]
+    public async Task Handle_ShouldReturnBadRequest_WhenNoUniqueEmailAndDateAsync()
     {
+        //Arrange
+        var product = new Product();
+        _mapperMock.Setup(x => x.Map<Product>(It.IsAny<AddProductCommand>()))
+                    .Returns(product);
+
+        _productRepositoryMock.Setup(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
+                                                                        _command.ProduceDate))
+                                .ReturnsAsync(false);
+
+        _productRepositoryMock.Setup(x => x.Add(It.IsAny<Product>()));
+
+        //Act
+        var result = await _commandHandler.Handle(_command, default);
+        //Assert
+        result.IsError.Should().Be(true);
+        result.FirstError.Should().Be(Error.Failure());
 
     }
-    public void Handle_ShouldReturnBadRequest_WhenInputIsNotValid()
-    {
 
-    }
 
 }
