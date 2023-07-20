@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ProductStore.Infrastructure\ProductStore.Infrastructure.csproj" />
     <ProjectReference Include="..\ProductStore.Application\ProductStore.Application.csproj" />
+    <ProjectReference Include="..\ProductStore.Contracts\ProductStore.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
