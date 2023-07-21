@@ -26,7 +26,13 @@ public class DeleteProductCommandHandler :
 
     public async Task<ErrorOr<bool>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        
+        var product =  await _productRepository.GetUserProductByIdAsync(request.UserId,
+                                                                            request.ProductId);
+        if (product is null)
+        {
+            return Error.NotFound();
+        }
+        _productRepository.Remove(product);
         
         return true;
 
