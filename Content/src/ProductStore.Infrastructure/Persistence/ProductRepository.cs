@@ -36,7 +36,7 @@ public class ProductRepository : IProductRepository
         if (isNotUnique)
         {
             return false;
-        } 
+        }
         return true;
     }
 
@@ -49,5 +49,18 @@ public class ProductRepository : IProductRepository
     {
         _context.Update(entity);
 
+    }
+
+
+
+    public Task<List<Product>> UserProductsAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public Task<Product?> UserProductsByIdAsync(int userId, int productId)
+    {
+        throw new NotImplementedException();
     }
 }

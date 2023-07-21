@@ -27,7 +27,7 @@ public class DeleteProductCommandHandler :
     public async Task<ErrorOr<bool>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
         
-
+        
         return true;
 
     }
