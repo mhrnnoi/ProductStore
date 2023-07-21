@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Products.Commands.Add;
 using ProductStore.Application.Features.Products.Commands.Delete;
+using ProductStore.Application.Features.Products.Commands.Edit;
 using ProductStore.Contracts.Products.Requests;
 
 namespace ProductStore.Api.Controllers;
@@ -36,6 +37,16 @@ public class ProductController : ApiController
     {
         var userId = GetUserId(User.Claims);
         var command = new DeleteProductCommand(userId, productId);
+        var result = await _mediatR.Send(command);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
+
+    }
+    [HttpPut()]
+    public async Task<IActionResult> DeleteProductAsync([FromBody] EditProductRequest request)
+    {
+        var userId = GetUserId(User.Claims);
+        var command = _mapper.Map<EditProductCommand>(request);
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
