@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+    webapi:
+        container_name: webapi
+        image: docker.io/library/productstore
+        build:
+            context: ./src
+            dockerfile: Dockerfile
+        ports:
+            - "8080:80"
+        depends_on:
+          - database
+        environment:
+            CONNECTION_STRING: "Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;Integrated Security=true;"
+    database:
+        container_name: sqlserver
+        image: mcr.microsoft.com/mssql/server
+        environment:
+            - ACCEPT_EULA=y
+            - SA_PASSWORD=Passwordcomplex6690
+        ports:
+            - "1433:1433"
+        volumes:
+            - sql_server_data:/var/opt/mssql
+    
+    
+
+volumes:
+    sql_server_data: {}
