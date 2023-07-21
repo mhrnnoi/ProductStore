@@ -47,6 +47,7 @@ public class ProductController : ApiController
     {
         var userId = GetUserId(User.Claims);
         var command = _mapper.Map<EditProductCommand>(request);
+        command = command with {UserId = userId};
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
