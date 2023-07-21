@@ -53,13 +53,13 @@ public class ProductRepository : IProductRepository
 
 
 
-    public Task<List<Product>> UserProductsAsync(int userId)
+    public Task<List<Product>> GetUserProductsAsync(int userId)
     {
         throw new NotImplementedException();
     }
 
 
-    public Task<Product?> UserProductsByIdAsync(int userId, int productId)
+    public Task<Product?> GetUserProductByIdAsync(int userId, int productId)
     {
         throw new NotImplementedException();
     }
