@@ -2,7 +2,6 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Products.Commands.Add;
-using ProductStore.Application.Features.Products.Commands.Delete;
 using ProductStore.Contracts.Products.Requests;
 
 namespace ProductStore.Api.Controllers;
@@ -11,7 +10,6 @@ namespace ProductStore.Api.Controllers;
 public class ProductController : ApiController
 {
     private readonly IMapper _mapper;
-
     private readonly IMediator _mediatR;
     public ProductController(IMediator mediatR, IMapper mapper)
     {
@@ -24,7 +22,6 @@ public class ProductController : ApiController
     public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
     {
         var command = _mapper.Map<AddProductCommand>(request);
-
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));

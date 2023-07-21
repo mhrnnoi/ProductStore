@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using FluentValidation;
 
 namespace ProductStore.Application.Features.Products.Commands.Delete;

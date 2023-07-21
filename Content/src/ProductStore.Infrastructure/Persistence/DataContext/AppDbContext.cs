@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Infrastructure.Persistence.DataContext;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityUserContext<IdentityUser>
 {
     public AppDbContext()
     {
@@ -15,6 +16,7 @@ public class AppDbContext : DbContext
     {
     }
     public DbSet<Product> Products { get; set; }
+    
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)

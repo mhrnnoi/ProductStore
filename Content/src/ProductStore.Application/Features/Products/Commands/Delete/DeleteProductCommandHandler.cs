@@ -2,7 +2,6 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using ProductStore.Application.Interfaces.Persistence;
-using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Commands.Delete;
 

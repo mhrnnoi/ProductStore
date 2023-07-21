@@ -5,10 +5,12 @@ using ProductStore.Infrastructure;
 using ProductStore.Infrastructure.Persistence.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 builder.Services.AddApplication()
-                .AddInfrastructure()
+                .AddInfrastructure(config)
                 .AddPresentation();
+                
 
 
 var app = builder.Build();
@@ -21,10 +23,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider
         .GetRequiredService<AppDbContext>();
-
     
     dbContext.Database.Migrate();
-
-
 }
 app.Run();
