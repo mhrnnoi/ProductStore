@@ -43,11 +43,11 @@ public class ProductController : ApiController
 
     }
     [HttpPut]
-    public async Task<IActionResult> DeleteProductAsync([FromBody] EditProductRequest request)
+    public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request)
     {
         var userId = GetUserId(User.Claims);
         var command = _mapper.Map<EditProductCommand>(request);
-        command = command with {UserId = userId};
+        command = command with { UserId = userId };
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));

@@ -42,7 +42,7 @@ public class EditProductCommandHandler :
         {
             return Error.NotFound();
         }
-        var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate)
+        var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate);
         if (!isUniqueByEmailAndDate)
         {
             return Error.Failure();
