@@ -42,7 +42,7 @@ public class ProductController : ApiController
                              errors => Problem(errors));
 
     }
-    [HttpPut()]
+    [HttpPut]
     public async Task<IActionResult> DeleteProductAsync([FromBody] EditProductRequest request)
     {
         var userId = GetUserId(User.Claims);
