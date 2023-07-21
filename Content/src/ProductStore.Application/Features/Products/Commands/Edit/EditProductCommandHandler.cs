@@ -42,6 +42,11 @@ public class EditProductCommandHandler :
         {
             return Error.NotFound();
         }
+        var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate)
+        if (!isUniqueByEmailAndDate)
+        {
+            return Error.Failure();
+        }
         var editedProduct = _mapper.Map<Product>(request);
         _productRepository.Update(editedProduct);
         await _unitOfWork.SaveChangesAsync();
