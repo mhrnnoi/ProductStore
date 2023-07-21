@@ -22,7 +22,7 @@ public class AppDbContext : DbContext
 
         if (options.IsConfigured == false)
         {
-            options.UseSqlServer("Server=localhost;Initial Catalog=mehran; User Id=SA; Password=Mehrancsharp6690;Encrypt=false");
+            options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;Integrated Security=true;");
         }
 
     }

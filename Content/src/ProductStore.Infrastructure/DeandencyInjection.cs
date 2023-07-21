@@ -14,7 +14,7 @@ public static class depandencyInjection
         services.AddMapping();
         services.AddDbContext<AppDbContext>(Options =>
         {
-            Options.UseSqlServer("Server=localhost;Port=1433;Initial Catalog=mehran; User Id=sa; Password=Mehrancsharp6690;Encrypt=false");
+            Options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;");
         });
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
