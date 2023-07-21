@@ -1,6 +1,7 @@
 using ErrorOr;
 using FluentAssertions;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using ProductStore.Application.Features.Products.Commands.Add;
 using ProductStore.Application.Interfaces.Persistence;
@@ -15,12 +16,14 @@ public class AddProductCommandHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly AddProductCommand _command;
     private readonly AddProductCommandHandler _commandHandler;
+    private readonly Mock<UserManager<IdentityUser>> _userManager;
 
     public AddProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
+        _userManager = new();
 
         _command = new AddProductCommand
         (
@@ -34,7 +37,9 @@ public class AddProductCommandHandlerTests
 
         _commandHandler = new AddProductCommandHandler(_unitOfWorkMock.Object,
                                                     _productRepositoryMock.Object,
-                                                    _mapperMock.Object);
+                                                    _mapperMock.Object,
+                                                    _userManager.Object
+                                                    );
     }
 
 

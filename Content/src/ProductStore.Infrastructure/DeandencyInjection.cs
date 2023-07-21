@@ -26,7 +26,6 @@ public static class depandencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtGenerator, JwtGenerator>();
         services.AddScoped<IDateTimeProvider, DatetimeProvider>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
 

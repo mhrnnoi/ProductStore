@@ -15,19 +15,16 @@ public class LoginCommandHandler :
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRepository _userRepository;
     private readonly IJwtGenerator _jwtGenerator;
 
     public LoginCommandHandler(IUnitOfWork unitOfWork,
                                     UserManager<IdentityUser> userManager,
                                     IMapper mapper,
-                                    IUserRepository userRepository,
                                     IJwtGenerator jwtGenerator)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _mapper = mapper;
-        _userRepository = userRepository;
         _jwtGenerator = jwtGenerator;
     }
 
@@ -47,9 +44,7 @@ public class LoginCommandHandler :
             return Error.Failure(description : "password is incorrect");
         }
 
-        // var userInDb = await _userRepository.FindByEmailAsync(request.Email);
-        // if (userInDb is null)
-        //     return Error.Custom(401, "UnOtherized", "Bad Credentisl");
+        
         var token = _jwtGenerator.GenerateToken(managedUser);
         await _unitOfWork.SaveChangesAsync();
 
