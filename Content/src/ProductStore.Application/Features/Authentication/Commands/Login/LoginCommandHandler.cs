@@ -53,8 +53,8 @@ public class LoginCommandHandler :
         var token = _jwtGenerator.GenerateToken(managedUser);
         await _unitOfWork.SaveChangesAsync();
 
-        var beforeToken = _mapper.Map<AuthResult>(managedUser);
-        var authResult = beforeToken with { Token = token };
+        var authResult = _mapper.Map<AuthResult>(managedUser);
+        authResult = authResult with { Token = token };
         return authResult;
     }
 }

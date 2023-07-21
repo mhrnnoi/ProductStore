@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,13 @@ namespace ProductStore.Api.Controllers;
 [Route("api")]
 public class ApiController : ControllerBase
 {
+    protected string GetUserId(IEnumerable<Claim> claims)
+    {
+
+        return claims.First(a => a.Type == ClaimTypes.NameIdentifier).Value;
+                                                
+    }
+
     protected IActionResult Problem(List<Error> errors)
     {
         var firstError = errors.First();

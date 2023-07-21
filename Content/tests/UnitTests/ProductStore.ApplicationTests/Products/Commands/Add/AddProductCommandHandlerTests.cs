@@ -24,7 +24,7 @@ public class AddProductCommandHandlerTests
 
         _command = new AddProductCommand
         (
-            1,
+            "1",
             true,
             "mehran",
             "16511",

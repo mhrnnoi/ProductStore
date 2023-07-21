@@ -31,7 +31,7 @@ public class RegisterCommandHandler :
 
     public async Task<ErrorOr<AuthResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        
+
         var user = _mapper.Map<IdentityUser>(request);
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
@@ -42,8 +42,8 @@ public class RegisterCommandHandler :
                                      code: firstError.Code);
         }
         var token = _jwtGenerator.GenerateToken(user);
-        var beforeToken = _mapper.Map<AuthResult>(request);
-        var authResult = beforeToken with {Token = token};
+        var authResult = _mapper.Map<AuthResult>(request);
+        authResult = authResult with { Token = token };
         await _unitOfWork.SaveChangesAsync();
         return authResult;
 

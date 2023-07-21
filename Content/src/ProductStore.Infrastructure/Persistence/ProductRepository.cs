@@ -53,14 +53,15 @@ public class ProductRepository : IProductRepository
 
 
 
-    public Task<List<Product>> GetUserProductsAsync(int userId)
+    public async Task<List<Product>> GetUserProductsAsync(string userId)
     {
-        throw new NotImplementedException();
+        return  await _context.Where(x => x.UserId == userId).ToListAsync();
     }
 
 
-    public Task<Product?> GetUserProductByIdAsync(int userId, int productId)
+    public async Task<Product?> GetUserProductByIdAsync(string userId, int productId)
     {
-        throw new NotImplementedException();
+        return  await _context.FirstOrDefaultAsync(x => x.UserId == userId &&
+                                                    x.Id == productId);
     }
 }
