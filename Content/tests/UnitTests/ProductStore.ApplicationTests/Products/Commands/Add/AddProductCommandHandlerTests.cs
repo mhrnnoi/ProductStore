@@ -51,6 +51,8 @@ public class AddProductCommandHandlerTests
                                .ReturnsAsync(true);
 
         _productRepositoryMock.Setup(x => x.Add(It.IsAny<Product>()));
+        _unitOfWorkMock.Setup(x => x.SaveChangesAsync())
+                        .Returns(Task.CompletedTask);
 
         //Act
         var result = await _commandHandler.Handle(_command, default);
