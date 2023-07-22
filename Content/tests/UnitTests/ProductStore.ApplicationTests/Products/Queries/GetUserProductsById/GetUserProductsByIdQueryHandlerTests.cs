@@ -1,7 +1,11 @@
+using ErrorOr;
+using FluentAssertions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using ProductStore.Application.Features.Products.Queries.GetUserProductsById;
 using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.ApplicationTests.Products.Queries.GetUserProductsById;
 
@@ -20,45 +24,48 @@ public class GetUserProductsByIdQueryHandlerTests
         _unitOfWorkMock = new();
         _userManager = new();
 
-        _query = new GetUserProductsByIdQuery(It.IsAny<int>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<bool>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<DateTime>(),
-                                          It.IsAny<string>());
+        _query = new GetUserProductsByIdQuery(It.IsAny<string>());
 
-        _queryHandler = new GetUserProductsByIdQueryHandler(_unitOfWorkMock.Object,
-                                                       _productRepositoryMock.Object,
-                                                       _mapperMock.Object,
-                                                       _userManager.Object);
+        _queryHandler = new GetUserProductsByIdQueryHandler(_productRepositoryMock.Object,
+                                                            _mapperMock.Object,
+                                                            _userManager.Object);
     }
 
     [Fact]
     public async void Handle_ShouldReturnUserProducts()
     {
         //Arrange
-
-        
+        var userId = It.IsAny<string>();
+        var user = It.IsAny<IdentityUser>();
+        var products = new List<Product>();
+        _userManager.Setup(x => x.FindByIdAsync(userId))
+                    .ReturnsAsync(user);
+        _productRepositoryMock.Setup(x => x.GetUserProductsAsync(userId))
+                                .ReturnsAsync(products);
 
         //Act
-        
-        //Assert
-        
+        var result = await _queryHandler.Handle(_query, default);
 
+        //Assert
+
+        result.IsError.Should().Be(false);
+        result.Value.Should().BeOfType(products.GetType());
     }
     [Fact]
     public async void Handle_ShouldReturnNotFound_WhenUserIsNotExist()
     {
         //Arrange
-
-        
+        var userId = It.IsAny<string>();
+        _userManager.Setup(x => x.FindByIdAsync(userId))
+                    .ReturnsAsync((IdentityUser?)null);
 
         //Act
-        
-        //Assert
-        
+        var result = await _queryHandler.Handle(_query, default);
 
+        //Assert
+
+        result.IsError.Should().Be(true);
+        result.FirstError.Should().Be(Error.NotFound());
     }
 
 }
