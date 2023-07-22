@@ -16,7 +16,7 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
     {
     }
     public DbSet<Product> Products { get; set; }
-    
+
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -27,5 +27,31 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
             options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;Integrated Security=true;");
         }
 
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Product>()
+            .HasIndex(p => new { p.Id, p.ManufactureEmail, p.ProduceDate })
+            .IsUnique();
+
+        modelBuilder.Entity<Product>()
+          .Property(p => p.ManufactureEmail)
+          .IsRequired()
+          .HasMaxLength(255);
+
+        modelBuilder.Entity<Product>()
+            .Property(p => p.ProduceDate)
+            .IsRequired();
+            
+        modelBuilder.Entity<Product>()
+            .Property(p => p.UserId)
+            .IsRequired()
+            .HasMaxLength(255);
+        modelBuilder.Entity<Product>()
+            .Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(255);
     }
 }
