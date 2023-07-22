@@ -22,8 +22,6 @@ services:
             - "1433:1433"
         volumes:
             - sql_server_data:/var/opt/mssql
-    
-    
 
 volumes:
     sql_server_data: {}

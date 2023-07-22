@@ -29,7 +29,7 @@ public static class depandencyInjection
         services.AddScoped<IDateTimeProvider, DatetimeProvider>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
-        AddAuthentication(services, jwtSettings);
+        services.AddAuthentication(AuthOptions()).AddJwtBearer(JwtBearerOptions(jwtSettings));
 
 
 
@@ -45,29 +45,33 @@ public static class depandencyInjection
         return services;
     }
 
-    private static AuthenticationBuilder AddAuthentication(IServiceCollection services, JwtSettings jwtSettings)
+    private static Action<AuthenticationOptions> AuthOptions()
     {
-        return
-                services.AddAuthentication(
-                    option =>
-                    {
-                        option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                        option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        return option =>
+        {
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
-                    }).AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters()
-                        {
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            ValidateLifetime = false,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = jwtSettings.Issuer,
-                            ValidAudience = jwtSettings.Audience,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
-                        };
-                    });
+        };
     }
+
+    private static Action<JwtBearerOptions> JwtBearerOptions(JwtSettings jwtSettings)
+    {
+        return options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+            };
+        };
+    }
+
 }
 
