@@ -17,6 +17,7 @@ public class AddProductCommandHandlerTests
     private readonly AddProductCommand _command;
     private readonly AddProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
 
     public AddProductCommandHandlerTests()
     {
@@ -24,6 +25,7 @@ public class AddProductCommandHandlerTests
         _mapperMock = new();
         _unitOfWorkMock = new();
         _userManagerMock = new();
+        _cacheServiceMock = new();
 
         _command = new AddProductCommand(It.IsAny<string>(),
                                          It.IsAny<bool>(),
@@ -35,7 +37,8 @@ public class AddProductCommandHandlerTests
         _commandHandler = new AddProductCommandHandler(_unitOfWorkMock.Object,
                                                        _productRepositoryMock.Object,
                                                        _mapperMock.Object,
-                                                       _userManagerMock.Object);
+                                                       _userManagerMock.Object,
+                                                       _cacheServiceMock.Object);
     }
 
 
