@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProductStore.Api.Controllers;
@@ -11,7 +12,7 @@ public class ApiController : ControllerBase
     protected string GetUserId(IEnumerable<Claim> claims)
     {
 
-        return claims.First(a => a.Type == ClaimTypes.NameIdentifier).Value;
+        return claims.First(a => a.Type == "id").Value;
                                                 
     }
 

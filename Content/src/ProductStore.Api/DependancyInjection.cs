@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.OpenApi.Models;
 using ProductStore.Infrastructure.Persistence.DataContext;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ProductStore.Api;
 
@@ -14,7 +15,9 @@ public static class DependancyInjection
 
         services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(AddAuthorization());
+        services.AddAuthorization();
+
 
         services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -22,6 +25,38 @@ public static class DependancyInjection
         services.Configure(IdenityOptions());
 
         return services;
+    }
+
+    private static Action<SwaggerGenOptions> AddAuthorization()
+    {
+        return option =>
+        {
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+        };
+
     }
 
     private static Action<IdentityOptions> IdenityOptions()

@@ -10,7 +10,6 @@ using ProductStore.Contracts.Authentication.Requests;
 namespace ProductStore.Api.Controllers;
 
 [Route("api/[controller]/[action]")]
-[AllowAnonymous]
 public class AuthenticationController : ApiController
 {
     private readonly IMapper _mapper;
@@ -23,7 +22,6 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
-
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
@@ -34,7 +32,6 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
-
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);

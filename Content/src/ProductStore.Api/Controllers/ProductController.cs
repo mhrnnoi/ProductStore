@@ -12,7 +12,6 @@ using ProductStore.Contracts.Products.Requests;
 namespace ProductStore.Api.Controllers;
 
 [Route("api/[controller]/[action]")]
-[Authorize]
 public class ProductController : ApiController
 {
     private readonly IMapper _mapper;
@@ -23,9 +22,8 @@ public class ProductController : ApiController
         _mapper = mapper;
     }
 
-
     [HttpPost]
-
+    [Authorize]
     public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
     {
         var userId = GetUserId(User.Claims);
@@ -38,6 +36,7 @@ public class ProductController : ApiController
     }
 
     [HttpDelete("{productId}")]
+    [Authorize]
     public async Task<IActionResult> DeleteProductAsync(int productId)
     {
         var userId = GetUserId(User.Claims);
@@ -47,7 +46,9 @@ public class ProductController : ApiController
                              errors => Problem(errors));
 
     }
+
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request)
     {
         var userId = GetUserId(User.Claims);
@@ -58,6 +59,7 @@ public class ProductController : ApiController
                              errors => Problem(errors));
 
     }
+
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> GetAllProductsAsync()
@@ -69,12 +71,12 @@ public class ProductController : ApiController
                              errors => Problem(errors));
 
     }
-    [HttpGet]
+
+    [HttpGet("{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetUserProductsByIdAsync()
+    public async Task<IActionResult> GetUserProductsByIdAsync(string id)
     {
-        var userId = GetUserId(User.Claims);
-        var query = new GetUserProductsByIdQuery(userId);
+        var query = new GetUserProductsByIdQuery(id);
         var result = await _mediatR.Send(query);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));

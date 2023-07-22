@@ -34,7 +34,7 @@ public class AddProductCommandHandler :
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
         {
-            return Error.NotFound();
+            return Error.NotFound($"{user.Id}, {request.UserId}");
         }
         
         var product = _mapper.Map<Product>(request);
