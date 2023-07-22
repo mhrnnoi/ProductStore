@@ -1,7 +1,10 @@
+using FluentAssertions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using ProductStore.Application.Features.Products.Queries.GetAll;
 using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.ApplicationTests.Products.Queries.GetAll;
 
@@ -20,31 +23,27 @@ public class GetAllProductsQueryHandlerTests
         _unitOfWorkMock = new();
         _userManager = new();
 
-        _query = new GetAllProductsQuery(It.IsAny<int>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<bool>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<string>(),
-                                          It.IsAny<DateTime>(),
-                                          It.IsAny<string>());
+        _query = new GetAllProductsQuery();
 
-        _queryHandler = new GetAllProductsQueryHandler(_unitOfWorkMock.Object,
-                                                       _productRepositoryMock.Object,
-                                                       _mapperMock.Object,
-                                                       _userManager.Object);
+        _queryHandler = new GetAllProductsQueryHandler(_productRepositoryMock.Object, _mapperMock.Object);
     }
 
     [Fact]
     public async void Handle_ShouldReturnAllProducts()
     {
         //Arrange
-
-        
+        var products = new List<Product>();
+        _productRepositoryMock.Setup(x => x.GetAllAsync())
+                                .ReturnsAsync(products);
 
         //Act
-        
+        var result = await _queryHandler.Handle(_query, default);
+
         //Assert
-        
+
+        result.IsError.Should().Be(false);
+        result.Value.Should().BeOfType(products.GetType());
+
 
     }
 
