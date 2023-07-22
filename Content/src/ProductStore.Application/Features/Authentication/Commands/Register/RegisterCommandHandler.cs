@@ -31,7 +31,7 @@ public class RegisterCommandHandler :
 
     public async Task<ErrorOr<AuthResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-
+       
         var user = _mapper.Map<IdentityUser>(request);
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)

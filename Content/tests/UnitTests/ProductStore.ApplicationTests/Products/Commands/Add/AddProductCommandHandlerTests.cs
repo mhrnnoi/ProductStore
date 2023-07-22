@@ -16,14 +16,14 @@ public class AddProductCommandHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly AddProductCommand _command;
     private readonly AddProductCommandHandler _commandHandler;
-    private readonly Mock<UserManager<IdentityUser>> _userManager;
+    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
 
     public AddProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManager = new();
+        _userManagerMock = new();
 
         _command = new AddProductCommand(It.IsAny<string>(),
                                          It.IsAny<bool>(),
@@ -35,7 +35,7 @@ public class AddProductCommandHandlerTests
         _commandHandler = new AddProductCommandHandler(_unitOfWorkMock.Object,
                                                        _productRepositoryMock.Object,
                                                        _mapperMock.Object,
-                                                       _userManager.Object);
+                                                       _userManagerMock.Object);
     }
 
 
@@ -46,7 +46,7 @@ public class AddProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
         var product = new Product();
@@ -73,7 +73,7 @@ public class AddProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
         var product = new Product();
@@ -98,7 +98,7 @@ public class AddProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync((IdentityUser?)null);
 
         //Act

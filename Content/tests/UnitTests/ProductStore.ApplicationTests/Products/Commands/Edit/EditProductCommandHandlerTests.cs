@@ -16,13 +16,13 @@ public class EditProductCommandHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly EditProductCommand _command;
     private readonly EditProductCommandHandler _commandHandler;
-    private readonly Mock<UserManager<IdentityUser>> _userManager;
+    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     public EditProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManager = new();
+        _userManagerMock = new();
 
         _command = new EditProductCommand(It.IsAny<int>(),
                                           It.IsAny<string>(),
@@ -35,7 +35,7 @@ public class EditProductCommandHandlerTests
         _commandHandler = new EditProductCommandHandler(_unitOfWorkMock.Object,
                                                        _productRepositoryMock.Object,
                                                        _mapperMock.Object,
-                                                       _userManager.Object);
+                                                       _userManagerMock.Object);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class EditProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.id))
@@ -74,7 +74,7 @@ public class EditProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.id))
@@ -92,7 +92,7 @@ public class EditProductCommandHandlerTests
     {
         //Arrange
 
-        _userManager.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
                      .ReturnsAsync((IdentityUser?)null);
 
         //Act
@@ -107,7 +107,7 @@ public class EditProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser() { Id = It.IsAny<string>() };
 
-        _userManager.Setup(x => x.FindByIdAsync(user.Id))
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.id))

@@ -15,13 +15,13 @@ public class GetAllProductsQueryHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly GetAllProductsQuery _query;
     private readonly GetAllProductsQueryHandler _queryHandler;
-    private readonly Mock<UserManager<IdentityUser>> _userManager;
+    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     public GetAllProductsQueryHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManager = new();
+        _userManagerMock = new();
 
         _query = new GetAllProductsQuery();
 

@@ -16,19 +16,19 @@ public class GetUserProductsByIdQueryHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly GetUserProductsByIdQuery _query;
     private readonly GetUserProductsByIdQueryHandler _queryHandler;
-    private readonly Mock<UserManager<IdentityUser>> _userManager;
+    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     public GetUserProductsByIdQueryHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManager = new();
+        _userManagerMock = new();
 
         _query = new GetUserProductsByIdQuery(It.IsAny<string>());
 
         _queryHandler = new GetUserProductsByIdQueryHandler(_productRepositoryMock.Object,
                                                             _mapperMock.Object,
-                                                            _userManager.Object);
+                                                            _userManagerMock.Object);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class GetUserProductsByIdQueryHandlerTests
         var userId = It.IsAny<string>();
         var user = It.IsAny<IdentityUser>();
         var products = new List<Product>();
-        _userManager.Setup(x => x.FindByIdAsync(userId))
+        _userManagerMock.Setup(x => x.FindByIdAsync(userId))
                     .ReturnsAsync(user);
         _productRepositoryMock.Setup(x => x.GetUserProductsAsync(userId))
                                 .ReturnsAsync(products);
@@ -56,7 +56,7 @@ public class GetUserProductsByIdQueryHandlerTests
     {
         //Arrange
         var userId = It.IsAny<string>();
-        _userManager.Setup(x => x.FindByIdAsync(userId))
+        _userManagerMock.Setup(x => x.FindByIdAsync(userId))
                     .ReturnsAsync((IdentityUser?)null);
 
         //Act

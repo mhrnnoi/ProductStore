@@ -16,21 +16,21 @@ public class DeleteProductCommandHandlerTests
 
     private readonly DeleteProductCommand _command;
     private readonly DeleteProductCommandHandler _commandHandler;
-    private readonly Mock<UserManager<IdentityUser>> _userManager;
+    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
 
     public DeleteProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManager = new();
+        _userManagerMock = new();
 
         _command = new DeleteProductCommand(It.IsAny<string>(), It.IsAny<int>());
 
         _commandHandler = new DeleteProductCommandHandler(_unitOfWorkMock.Object,
                                                           _productRepositoryMock.Object,
                                                           _mapperMock.Object,
-                                                          _userManager.Object);
+                                                          _userManagerMock.Object);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class DeleteProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser();
         var product = new Product();
-        _userManager.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
                      .ReturnsAsync(user);
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(It.IsAny<string>(), It.IsAny<int>()))
                         .ReturnsAsync(product);
@@ -60,7 +60,7 @@ public class DeleteProductCommandHandlerTests
         //Arrange
         var user = new IdentityUser();
 
-        _userManager.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
                      .ReturnsAsync(user);
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(It.IsAny<string>(), It.IsAny<int>()))
                         .ReturnsAsync((Product?)null);
@@ -76,7 +76,7 @@ public class DeleteProductCommandHandlerTests
     public async Task Handle_ShouldReturnNotFound_UserWithIdIsNotExist()
     {
         //Arrange
-        _userManager.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
                      .ReturnsAsync((IdentityUser?)null);
         //Act
         var result = await _commandHandler.Handle(_command, default);
