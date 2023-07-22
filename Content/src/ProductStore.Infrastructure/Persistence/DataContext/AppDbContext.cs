@@ -42,16 +42,30 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
           .HasMaxLength(255);
 
         modelBuilder.Entity<Product>()
+          .Property(p => p.ManufacturePhone)
+          .IsRequired()
+          .HasMaxLength(255);
+
+        modelBuilder.Entity<Product>()
             .Property(p => p.ProduceDate)
             .IsRequired();
-            
+
         modelBuilder.Entity<Product>()
             .Property(p => p.UserId)
-            .IsRequired()
-            .HasMaxLength(255);
+            .IsRequired();
+            
         modelBuilder.Entity<Product>()
             .Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(255);
+
+        modelBuilder.Entity<Product>()
+        .HasOne<IdentityUser>()
+        .WithMany()
+        .HasForeignKey(x => x.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+
+
     }
 }
