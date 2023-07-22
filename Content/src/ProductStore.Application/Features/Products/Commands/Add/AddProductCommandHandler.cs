@@ -36,6 +36,7 @@ public class AddProductCommandHandler :
         {
             return Error.NotFound();
         }
+        
         var product = _mapper.Map<Product>(request);
         var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, 
                                                         request.ProduceDate);

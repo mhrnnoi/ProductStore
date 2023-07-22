@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Products.Commands.Add;
 using ProductStore.Application.Features.Products.Commands.Delete;
 using ProductStore.Application.Features.Products.Commands.Edit;
+using ProductStore.Application.Features.Products.Queries.GetAll;
+using ProductStore.Application.Features.Products.Queries.GetUserProductsById;
 using ProductStore.Contracts.Products.Requests;
 
 namespace ProductStore.Api.Controllers;
@@ -52,6 +54,28 @@ public class ProductController : ApiController
         var command = _mapper.Map<EditProductCommand>(request);
         command = command with { UserId = userId };
         var result = await _mediatR.Send(command);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
+
+    }
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllProductsAsync()
+    {
+
+        var query = new GetAllProductsQuery();
+        var result = await _mediatR.Send(query);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
+
+    }
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetUserProductsByIdAsync()
+    {
+        var userId = GetUserId(User.Claims);
+        var query = new GetUserProductsByIdQuery(userId);
+        var result = await _mediatR.Send(query);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
