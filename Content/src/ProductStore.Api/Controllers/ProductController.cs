@@ -1,5 +1,6 @@
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Products.Commands.Add;
 using ProductStore.Application.Features.Products.Commands.Delete;
@@ -9,6 +10,7 @@ using ProductStore.Contracts.Products.Requests;
 namespace ProductStore.Api.Controllers;
 
 [Route("api/[controller]/[action]")]
+[Authorize]
 public class ProductController : ApiController
 {
     private readonly IMapper _mapper;
@@ -21,6 +23,7 @@ public class ProductController : ApiController
 
 
     [HttpPost]
+
     public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
     {
         var userId = GetUserId(User.Claims);
