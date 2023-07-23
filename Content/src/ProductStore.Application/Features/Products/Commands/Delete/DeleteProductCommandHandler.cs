@@ -40,6 +40,7 @@ public class DeleteProductCommandHandler :
             return Error.NotFound("product with this id is not exist in your product list..");
 
         _productRepository.Remove(product);
+        await _unitOfWork.SaveChangesAsync();
 
         return true;
 

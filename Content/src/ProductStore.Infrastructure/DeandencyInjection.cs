@@ -64,6 +64,7 @@ public static class depandencyInjection
     {
         return option =>
         {
+            
             option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -75,6 +76,7 @@ public static class depandencyInjection
     {
         return options =>
         {
+            options.SaveToken = true;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateIssuer = true,

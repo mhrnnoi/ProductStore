@@ -24,18 +24,17 @@ public class CacheService : ICacheService
         _jwtOptions = jwtOptions.Value;
     }
 
-    public bool AddToBlacklist(string token)
+    public bool BlacklistToken(string token)
     {
-
+        if (_jwtOptions.ExpiryMinutes < 1)
+            _jwtOptions.ExpiryMinutes = 1;
         var expiryTime = _dateTimeProvider.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes)
                                                  .Subtract(_dateTimeProvider.UtcNow);
-        if (_jwtOptions.ExpiryMinutes < 1)
-            return false;
 
-        return _cacheDb.StringSet(token,
-                                  JsonSerializer.Serialize(true),
-                                  expiryTime);
+        return _cacheDb.StringSet(token, "BlackList", expiryTime);
+
     }
+
 
     public T? GetData<T>(string key)
     {
@@ -46,11 +45,11 @@ public class CacheService : ICacheService
         return default;
     }
 
-    public bool IsInBlacklist(string token)
+    public bool IsBlacklistToken(string token)
     {
         var value = _cacheDb.StringGet(token);
         if (!value.IsNullOrEmpty)
-            return JsonSerializer.Deserialize<bool>(value);
+            return true;
         return false;
     }
 
@@ -66,9 +65,62 @@ public class CacheService : ICacheService
     {
         var expiryTime = expirationTime.DateTime.Subtract(_dateTimeProvider.UtcNow);
         if (expirationTime <= _dateTimeProvider.UtcNow)
-            return false;
-        return _cacheDb.StringSet(key,
-                                 JsonSerializer.Serialize(value),
-                                 expiryTime);
+            expiryTime = new TimeSpan(0, 1, 0);
+        return _cacheDb.StringSet(key, JsonSerializer.Serialize(value), expiryTime);
     }
+    public bool IsTokenInSet(string userId, string token)
+    {
+        return _cacheDb.SetContains(userId, token);
+    }
+
+    public bool UserActiveToken(string userId, string token)
+    {
+
+        if (_jwtOptions.ExpiryMinutes <= 1)
+            _jwtOptions.ExpiryMinutes = 1;
+        var expiryTime = _dateTimeProvider.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes).Subtract(_dateTimeProvider.UtcNow);
+        if (!IsTokenInSet(userId, token))
+        {
+            var addResult = _cacheDb.SetAdd(userId, token);
+            var setExpireResult = _cacheDb.KeyExpire(userId, expiryTime);
+            if (addResult && setExpireResult)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+
+
+    }
+    public bool BlacklistUserAllTokens(string userId)
+    {
+
+        if (_jwtOptions.ExpiryMinutes < 1)
+            _jwtOptions.ExpiryMinutes = 1;
+        var expiryTime = _dateTimeProvider.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes)
+                                                 .Subtract(_dateTimeProvider.UtcNow);
+        var tokens = _cacheDb.SetMembers(userId);
+        bool result = true;
+        if (tokens.Count() > 0)
+        {
+            RedisKey key;
+            foreach (var item in tokens)
+            {
+                key = item.ToString();
+                result = _cacheDb.StringSet(key, "BlackList", expiryTime);
+                if (result is false)
+                    return false;
+            }
+
+        }
+        return result;
+
+    }
+
+
+
+
+
 }

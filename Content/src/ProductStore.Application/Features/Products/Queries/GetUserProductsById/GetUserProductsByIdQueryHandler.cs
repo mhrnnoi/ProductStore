@@ -26,7 +26,7 @@ public class GetUserProductsByIdQueryHandler : IRequestHandler<GetUserProductsBy
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.NotFound("something went wrong..");
+            return Error.Failure("something went wrong..");
 
         return await _productRepository.GetUserProductsAsync(request.UserId);
 

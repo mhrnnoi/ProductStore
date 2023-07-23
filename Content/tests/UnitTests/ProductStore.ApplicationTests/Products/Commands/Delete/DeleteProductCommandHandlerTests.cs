@@ -45,7 +45,8 @@ public class DeleteProductCommandHandlerTests
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(user.Id, product.Id))
                         .ReturnsAsync(product);
         _productRepositoryMock.Setup(x => x.Remove(product));
-
+        _unitOfWorkMock.Setup(x => x.SaveChangesAsync())
+                                .Returns(Task.CompletedTask);
 
         //Act
         var result = await _commandHandler.Handle(_command, default);
@@ -56,6 +57,8 @@ public class DeleteProductCommandHandlerTests
         _userManagerMock.Verify(x => x.FindByIdAsync(user.Id), Times.Once);
         _productRepositoryMock.Verify(x => x.GetUserProductByIdAsync(user.Id, product.Id),
                                                                              Times.Once);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+
 
     }
     [Fact]

@@ -43,6 +43,7 @@ public class GetAllProductsQueryHandlerTests
 
         result.IsError.Should().Be(false);
         result.Value.Should().BeOfType(products.GetType());
+        _productRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
 
 
     }

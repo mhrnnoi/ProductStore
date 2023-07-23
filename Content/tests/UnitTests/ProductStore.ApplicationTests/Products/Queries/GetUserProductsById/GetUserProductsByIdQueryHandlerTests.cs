@@ -35,8 +35,8 @@ public class GetUserProductsByIdQueryHandlerTests
     public async void Handle_ShouldReturnUserProducts()
     {
         //Arrange
-        var userId = It.IsAny<string>();
-        var user = It.IsAny<IdentityUser>();
+        var userId = _query.UserId;
+        var user = new IdentityUser() {Id = userId};
         var products = new List<Product>();
         _userManagerMock.Setup(x => x.FindByIdAsync(userId))
                     .ReturnsAsync(user);
@@ -50,9 +50,11 @@ public class GetUserProductsByIdQueryHandlerTests
 
         result.IsError.Should().Be(false);
         result.Value.Should().BeOfType(products.GetType());
+        _userManagerMock.Verify(x => x.FindByIdAsync(userId), Times.Once);
+        _productRepositoryMock.Verify(x => x.GetUserProductsAsync(userId), Times.Once);
     }
     [Fact]
-    public async void Handle_ShouldReturnNotFound_WhenUserIsNotExist()
+    public async void Handle_ShouldReturnFailure_WhenUserIsNotExist()
     {
         //Arrange
         var userId = It.IsAny<string>();
@@ -65,7 +67,7 @@ public class GetUserProductsByIdQueryHandlerTests
         //Assert
 
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.NotFound());
+        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
     }
 
 }

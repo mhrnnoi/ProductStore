@@ -39,20 +39,20 @@ public class LoginCommandHandlerTests
     [Fact]
     public async Task Handle_Should_ReturnFailure_WhenEmailInvalidAsync()
     {
-
+        //Arrange
         _userManagerMock.Setup(x => x.FindByEmailAsync(_command.Email))
                             .ReturnsAsync((IdentityUser?)null);
         //Act
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
     }
 
     [Fact]
     public async Task Handle_Should_ReturnFailure_WhenPasswordInvalidAsync()
     {
-
+        //Arrange
         var user = new IdentityUser()
         {
             Email = _command.Email,
@@ -66,7 +66,7 @@ public class LoginCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
     }
 
 
@@ -106,10 +106,14 @@ public class LoginCommandHandlerTests
 
         result.IsError.Should().Be(false);
         result.Value.Should().Be(authResult);
+        result.Value.Token.Should().Be(token);
 
         _userManagerMock.Verify(x => x.FindByEmailAsync(_command.Email),
                                      Times.Once);
-        result.Value.Token.Should().Be(token);
+        _userManagerMock.Verify(x => x.CheckPasswordAsync(user, _command.Password),
+                                     Times.Once);
+        _JwtGeneratorMock.Verify(x => x.GenerateToken(user), Times.Never);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
 
 
 

@@ -4,7 +4,6 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ProductStore.Application.Features.Authentication.Commands.ResetPassword;
-// using ProductStore.Application.Features.Authentication.Commands.ResetPassword;
 using ProductStore.Application.Features.Authentication.Common;
 using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Application.Interfaces.Services;
@@ -52,7 +51,7 @@ public class ResetPasswordCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnBadCredential_WhenEmailInvalidAsync()
+    public async Task Handle_Should_ReturnFailure_WhenEmailInvalidAsync()
     {
 
         //Assert
@@ -62,11 +61,11 @@ public class ResetPasswordCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnBadCredential_WhenPasswordInvalidAsync()
+    public async Task Handle_Should_ReturnFailure_WhenPasswordInvalidAsync()
     {
 
         //Arrange
@@ -84,7 +83,7 @@ public class ResetPasswordCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
     }
 
 
