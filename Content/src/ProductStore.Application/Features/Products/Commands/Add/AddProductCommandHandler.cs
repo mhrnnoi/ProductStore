@@ -15,22 +15,26 @@ public class AddProductCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<IdentityUser> _userManager;
+ private readonly ICacheService _cacheService;
 
 
     public AddProductCommandHandler(IUnitOfWork unitOfWork,
                                     IProductRepository productRepository,
                                     IMapper mapper,
-                                    UserManager<IdentityUser> userManager)
+                                    UserManager<IdentityUser> userManager,
+                                    ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
         _mapper = mapper;
         _userManager = userManager;
+        _cacheService = cacheService;
     }
 
 
     public async Task<ErrorOr<Product>> Handle(AddProductCommand request, CancellationToken cancellationToken)
     {
+        
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
         {

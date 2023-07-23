@@ -26,6 +26,7 @@ public static class depandencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtGenerator, JwtGenerator>();
+        services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IDateTimeProvider, DatetimeProvider>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
@@ -62,12 +63,13 @@ public static class depandencyInjection
         {
             options.TokenValidationParameters = new TokenValidationParameters()
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = false,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
+                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
         };
