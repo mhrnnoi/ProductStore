@@ -4,11 +4,9 @@ using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Commands.Add;
 
-public record AddProductCommand(
-    string UserId,
-    bool IsAvailable,
-    string ManufactureEmail,
-    string ManufacturePhone,
-    DateTime ProduceDate,
-    string Name
-) : IRequest<ErrorOr<Product>>;
+public record AddProductCommand(string UserId,
+                                bool IsAvailable,
+                                string ManufactureEmail,
+                                string ManufacturePhone,
+                                DateTime ProduceDate,
+                                string Name) : IRequest<ErrorOr<Product>>;
