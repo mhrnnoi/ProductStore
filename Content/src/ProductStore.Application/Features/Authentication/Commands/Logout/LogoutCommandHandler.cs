@@ -22,7 +22,7 @@ public class LogoutCommandHandler :
 
     public async Task<ErrorOr<bool>> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
-        var result = _cacheService.AddToBlacklist(request.Token);
+        var result = _cacheService.BlacklistToken(request.Token);
         if (result is false)
             return Error.Failure("Something Went Wrong..");
         return true;

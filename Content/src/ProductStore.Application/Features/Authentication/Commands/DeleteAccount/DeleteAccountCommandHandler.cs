@@ -49,10 +49,14 @@ public class DeleteAccountCommandHandler :
         if (!result.Succeeded)
             return FailToDelete(result);
 
-        var blacklistResult = _cacheService.AddToBlacklist(request.Token);
-        
+        var blacklistResult = _cacheService.BlacklistToken(request.Token);
+
         if (blacklistResult is false)
             return Error.Failure("Something Went Wrong..");
+        blacklistResult = _cacheService.BlacklistUserAllTokens(user.Id);
+        if (blacklistResult is false)
+            return Error.Failure("Something Went Wrong..");
+
 
         await _unitOfWork.SaveChangesAsync();
         return true;

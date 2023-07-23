@@ -18,7 +18,7 @@ public class IsValidAuthenticated : IMiddleware
         if (context.User.Identity.IsAuthenticated)
         {
             var token = await context.GetTokenAsync("Bearer", "access_token");
-            var isBlacklist = _cacheService.IsInBlacklist(token);
+            var isBlacklist = _cacheService.IsBlacklistToken(token);
             if (isBlacklist)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;

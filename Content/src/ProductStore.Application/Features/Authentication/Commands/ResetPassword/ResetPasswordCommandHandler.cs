@@ -53,13 +53,20 @@ public class ResetPasswordCommandHandler :
         if (!result.Succeeded)
             return PasswordChangeFailure(result);
 
-        var blacklistResult = _cacheService.AddToBlacklist(request.Token);
+        var blacklistResult = _cacheService.BlacklistToken(request.Token);
+
+        if (blacklistResult is false)
+            return Error.Failure("Something Went Wrong..");
+        blacklistResult = _cacheService.BlacklistUserAllTokens(user.Id);
         if (blacklistResult is false)
             return Error.Failure("Something Went Wrong..");
 
         var newToken = _jwtGenerator.GenerateToken(user);
         var authResult = _mapper.Map<AuthResult>(user);
         authResult = authResult with { Token = newToken };
+        var activeTokenResult = _cacheService.UserActiveToken(user.Id, newToken);
+        if (!activeTokenResult)
+            return Error.Failure("Something Went Wrong..");
         await _unitOfWork.SaveChangesAsync();
         return authResult;
 

@@ -16,16 +16,19 @@ public class RegisterCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly ICacheService _cacheService;
 
     public RegisterCommandHandler(IUnitOfWork unitOfWork,
                                   UserManager<IdentityUser> userManager,
                                   IMapper mapper,
-                                  IJwtGenerator jwtGenerator)
+                                  IJwtGenerator jwtGenerator,
+                                  ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _mapper = mapper;
         _jwtGenerator = jwtGenerator;
+        _cacheService = cacheService;
     }
 
 
@@ -40,6 +43,10 @@ public class RegisterCommandHandler :
             return ReturnRegisterationFailure(result);
 
         var token = _jwtGenerator.GenerateToken(user);
+        var activeTokenResult = _cacheService.UserActiveToken(user.Id, token);
+        if (!activeTokenResult)
+            return Error.Failure("Something Went Wrong..");
+            
         var authResult = _mapper.Map<AuthResult>(request);
         authResult = authResult with { Token = token };
         await _unitOfWork.SaveChangesAsync();
