@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" /> -->
     <ProjectReference Include="..\ProductStore.Domain\ProductStore.Domain.csproj" />
     <PackageReference Include="ErrorOr" Version="1.2.1" />
     <PackageReference Include="FluentValidation" Version="11.6.0" />
@@ -17,8 +16,6 @@
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
-    <!-- <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.9" />   -->
   </ItemGroup>
 
 

@@ -32,18 +32,16 @@ public class LoginCommandHandler :
     public async Task<ErrorOr<AuthResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
 
-
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
         if (managedUser is null)
         {
-            return Error.Failure();
+            return Error.Failure("Bad Credential");
         }
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
         if (!isPasswordValid)
         {
-            return Error.Failure(description : "password is incorrect");
+            return Error.Failure("Bad Credential");
         }
-
         
         var token = _jwtGenerator.GenerateToken(managedUser);
         await _unitOfWork.SaveChangesAsync();

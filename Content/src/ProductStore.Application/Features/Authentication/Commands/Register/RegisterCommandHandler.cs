@@ -18,9 +18,9 @@ public class RegisterCommandHandler :
     private readonly IJwtGenerator _jwtGenerator;
 
     public RegisterCommandHandler(IUnitOfWork unitOfWork,
-                                    UserManager<IdentityUser> userManager,
-                                    IMapper mapper,
-                                    IJwtGenerator jwtGenerator)
+                                  UserManager<IdentityUser> userManager,
+                                  IMapper mapper,
+                                  IJwtGenerator jwtGenerator)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
@@ -29,18 +29,14 @@ public class RegisterCommandHandler :
     }
 
 
-    public async Task<ErrorOr<AuthResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthResult>> Handle(RegisterCommand request,
+                                                  CancellationToken cancellationToken)
     {
-       
+
         var user = _mapper.Map<IdentityUser>(request);
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
-        {
-
-            var firstError = result.Errors.First();
-            return Error.Failure(description: firstError.Description,
-                                     code: firstError.Code);
-        }
+            return RetunrRegisterationFailure(result);
         var token = _jwtGenerator.GenerateToken(user);
         var authResult = _mapper.Map<AuthResult>(request);
         authResult = authResult with { Token = token };
@@ -48,5 +44,12 @@ public class RegisterCommandHandler :
         return authResult;
 
 
+    }
+
+    private static Error RetunrRegisterationFailure(IdentityResult result)
+    {
+        var firstError = result.Errors.First();
+        return Error.Failure(description: firstError.Description,
+                             code: firstError.Code);
     }
 }

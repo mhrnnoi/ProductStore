@@ -1,5 +1,3 @@
-using ProductStore.Application.Interfaces.Services;
-
 namespace ProductStore.Application.Interfaces.Persistence;
 
     public interface ICacheService 
