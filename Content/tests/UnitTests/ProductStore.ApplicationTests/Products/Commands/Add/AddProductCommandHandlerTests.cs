@@ -47,7 +47,7 @@ public class AddProductCommandHandlerTests
     public async void Handle_ShouldReturnCreatedProduct_WhenHaveUniqueEmailAndDate()
     {
         //Arrange
-        var user = new IdentityUser() { Id = It.IsAny<string>() };
+        var user = new IdentityUser() { Id = _command.UserId };
 
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
@@ -69,12 +69,17 @@ public class AddProductCommandHandlerTests
         result.IsError.Should().NotBe(true);
         result.Value.Should().Be(product);
         result.Value.UserId.Should().Be(user.Id);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        _productRepositoryMock.Verify(x => x.Add(product), Times.Once);
+        _productRepositoryMock.Verify(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
+                                                                _command.ProduceDate), Times.Once);
+        _userManagerMock.Verify(x => x.FindByIdAsync(_command.UserId), Times.Once);
     }
     [Fact]
     public async Task Handle_ShouldReturnBadRequest_WhenNoUniqueEmailAndDateAsync()
     {
         //Arrange
-        var user = new IdentityUser() { Id = It.IsAny<string>() };
+        var user = new IdentityUser() { Id = _command.UserId  };
 
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
@@ -92,14 +97,14 @@ public class AddProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("there is a product with this email and produce date "));
 
     }
     [Fact]
-    public async Task Handle_ShouldReturnNotFound_WhenUserNotExistAsync()
+    public async Task Handle_ShouldReturnBadRequest_WhenUserNotExistAsync()
     {
         //Arrange
-        var user = new IdentityUser() { Id = It.IsAny<string>() };
+        var user = new IdentityUser() { Id = _command.UserId  };
 
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync((IdentityUser?)null);
@@ -108,7 +113,7 @@ public class AddProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure());
+        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
 
     }
 

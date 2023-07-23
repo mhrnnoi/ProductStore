@@ -1,3 +1,4 @@
+using ErrorOr;
 using FluentAssertions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
@@ -37,11 +38,11 @@ public class DeleteProductCommandHandlerTests
     public async void Handle_ShouldDeleteProductAndReturnTrue_WhenProductIsAvailableForUserWithId()
     {
         //Arrange
-        var user = new IdentityUser();
-        var product = new Product();
-        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        var user = new IdentityUser() { Id = _command.UserId };
+        var product = new Product() { Id = It.IsAny<int>() };
+        _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
-        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(It.IsAny<string>(), It.IsAny<int>()))
+        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(user.Id, product.Id))
                         .ReturnsAsync(product);
         _productRepositoryMock.Setup(x => x.Remove(product));
 
@@ -52,6 +53,9 @@ public class DeleteProductCommandHandlerTests
         result.IsError.Should().NotBe(true);
         result.Value.Should().Be(true);
         _productRepositoryMock.Verify(x => x.Remove(product), Times.Once);
+        _userManagerMock.Verify(x => x.FindByIdAsync(user.Id), Times.Once);
+        _productRepositoryMock.Verify(x => x.GetUserProductByIdAsync(user.Id, product.Id),
+                                                                             Times.Once);
 
     }
     [Fact]
@@ -70,10 +74,11 @@ public class DeleteProductCommandHandlerTests
         //Assert
         result.IsError.Should().Be(true);
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
+        result.FirstError.Should().Be(Error.NotFound("product with this id is not exist in your product list.."));
 
     }
     [Fact]
-    public async Task Handle_ShouldReturnNotFound_UserWithIdIsNotExist()
+    public async Task Handle_ShouldReturnBadRequest_WhenUserWithIdIsNotExist()
     {
         //Arrange
         _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
@@ -82,6 +87,7 @@ public class DeleteProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
+        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
 
 
