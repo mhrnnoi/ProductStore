@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using ErrorOr;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProductStore.Api.Controllers;
