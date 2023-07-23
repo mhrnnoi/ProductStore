@@ -25,6 +25,7 @@ public class ValidationBehaviour<TRequest, TResponse> :
         if (result.IsValid)
         {
             return await next();
+            
         }
         await _unitOfWork.DisposeAsync();
         //this dynamic i use , is for simplcity i know dynamic is dangerous :)
