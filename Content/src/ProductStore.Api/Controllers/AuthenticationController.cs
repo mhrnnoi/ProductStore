@@ -1,9 +1,11 @@
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Authentication.Commands.Login;
+using ProductStore.Application.Features.Authentication.Commands.Logout;
 using ProductStore.Application.Features.Authentication.Commands.Register;
 using ProductStore.Contracts.Authentication.Requests;
 
@@ -35,6 +37,17 @@ public class AuthenticationController : ApiController
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);
+        var result = await _mediatR.Send(command);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
+    }
+    
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> LogoutAsync()
+    {
+        var token = await HttpContext.GetTokenAsync("Bearer", "access_token");
+        var command = new LogoutCommand(token);
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
