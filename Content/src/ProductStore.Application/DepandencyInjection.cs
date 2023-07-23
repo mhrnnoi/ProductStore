@@ -10,9 +10,11 @@ public static class DepandencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly
+                                    (Assembly.GetExecutingAssembly()));
 
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>),
+                                 typeof(ValidationBehaviour<,>));
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

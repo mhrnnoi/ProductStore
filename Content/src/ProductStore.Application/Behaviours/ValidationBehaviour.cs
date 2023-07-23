@@ -12,7 +12,7 @@ public class ValidationBehaviour<TRequest, TResponse> :
     private readonly IValidator<TRequest> _validator;
     private readonly IUnitOfWork _unitOfWork;
     public ValidationBehaviour(IValidator<TRequest> validator,
-                              IUnitOfWork unitOfWork)
+                                IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
         _validator = validator;
@@ -21,16 +21,13 @@ public class ValidationBehaviour<TRequest, TResponse> :
                                         RequestHandlerDelegate<TResponse> next,
                                         CancellationToken cancellationToken)
     {
-        var result = await _validator.ValidateAsync(request, cancellationToken);
+        var result = await _validator.ValidateAsync(request,
+                                                     cancellationToken);
         if (result.IsValid)
-        {
             return await next();
-            
-        }
         await _unitOfWork.DisposeAsync();
-        //this dynamic i use , is for simplcity i know dynamic is dangerous :)
         return (dynamic)Error.Validation(result.Errors.First().PropertyName,
-                                        result.Errors.First().ErrorMessage);
+                                            result.Errors.First().ErrorMessage);
 
     }
 }

@@ -23,7 +23,6 @@ public class LogoutCommandHandler :
     public async Task<ErrorOr<bool>> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
         _cacheService.AddBlacklist(request.Token, _dateTimeProvider.UtcNow.AddMinutes(5));
-
         return true;
     }
 }
