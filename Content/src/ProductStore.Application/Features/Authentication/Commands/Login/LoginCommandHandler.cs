@@ -33,19 +33,17 @@ public class LoginCommandHandler :
     {
 
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
+
         if (managedUser is null)
-        {
             return Error.Failure("Bad Credential");
-        }
-        var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
+
+        var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser,
+                                                                    request.Password);
         if (!isPasswordValid)
-        {
             return Error.Failure("Bad Credential");
-        }
-        
+
         var token = _jwtGenerator.GenerateToken(managedUser);
         await _unitOfWork.SaveChangesAsync();
-
         var authResult = _mapper.Map<AuthResult>(managedUser);
         authResult = authResult with { Token = token };
         return authResult;

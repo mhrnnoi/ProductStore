@@ -10,8 +10,8 @@ public class LogoutCommandHandler :
                                     ErrorOr<bool>>
 {
 
- private readonly ICacheService _cacheService;
- private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ICacheService _cacheService;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
     public LogoutCommandHandler(ICacheService cacheService, IDateTimeProvider dateTimeProvider)
     {
@@ -22,7 +22,10 @@ public class LogoutCommandHandler :
 
     public async Task<ErrorOr<bool>> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
-        _cacheService.AddBlacklist(request.Token, _dateTimeProvider.UtcNow.AddMinutes(5));
+        var result = _cacheService.AddToBlacklist(request.Token);
+        if (result is false)
+            return Error.Failure("Something Went Wrong..");
         return true;
+
     }
 }

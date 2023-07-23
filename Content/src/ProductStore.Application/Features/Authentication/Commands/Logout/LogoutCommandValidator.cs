@@ -8,6 +8,7 @@ public class LogoutCommandValidator :
 
     public LogoutCommandValidator()
     {
-
+            RuleFor(x => x.Token).NotEmpty()
+                                 .WithMessage("failed to log out");
     }
 }

@@ -35,8 +35,10 @@ public class RegisterCommandHandler :
 
         var user = _mapper.Map<IdentityUser>(request);
         var result = await _userManager.CreateAsync(user, request.Password);
+
         if (!result.Succeeded)
-            return RetunrRegisterationFailure(result);
+            return ReturnRegisterationFailure(result);
+
         var token = _jwtGenerator.GenerateToken(user);
         var authResult = _mapper.Map<AuthResult>(request);
         authResult = authResult with { Token = token };
@@ -46,7 +48,7 @@ public class RegisterCommandHandler :
 
     }
 
-    private static Error RetunrRegisterationFailure(IdentityResult result)
+    private static Error ReturnRegisterationFailure(IdentityResult result)
     {
         var firstError = result.Errors.First();
         return Error.Failure(description: firstError.Description,

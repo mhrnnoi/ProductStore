@@ -41,27 +41,21 @@ public class ResetPasswordCommandHandler :
 
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
-        {
-            return Error.Failure();
+            return Error.Failure("Bad Credential");
 
-        }
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.OldPassword);
         if (!isPasswordCorrect)
-        {
-            return Error.Failure();
-        }
+            return Error.Failure("Bad Credential");
 
         var result = await _userManager.ChangePasswordAsync(user,
                                                             request.OldPassword,
                                                             request.NewPassword);
         if (!result.Succeeded)
-        {
+            return PasswordChangeFailure(result);
 
-            var firstError = result.Errors.First();
-            return Error.Failure(description: firstError.Description,
-                                     code: firstError.Code);
-        }
-        _cacheService.AddBlacklist(request.Token, _dateTimeProvider.UtcNow.AddMinutes(5));
+        var blacklistResult = _cacheService.AddToBlacklist(request.Token);
+        if (blacklistResult is false)
+            return Error.Failure("Something Went Wrong..");
 
         var newToken = _jwtGenerator.GenerateToken(user);
         var authResult = _mapper.Map<AuthResult>(user);
@@ -70,5 +64,12 @@ public class ResetPasswordCommandHandler :
         return authResult;
 
 
+    }
+
+    private static ErrorOr<AuthResult> PasswordChangeFailure(IdentityResult result)
+    {
+        var firstError = result.Errors.First();
+        return Error.Failure(description: firstError.Description,
+                                 code: firstError.Code);
     }
 }
