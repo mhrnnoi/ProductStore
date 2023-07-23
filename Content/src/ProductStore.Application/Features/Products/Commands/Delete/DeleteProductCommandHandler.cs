@@ -32,15 +32,13 @@ public class DeleteProductCommandHandler :
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-        {
-            return Error.Failure();
-        }
+            return Error.Failure("something went wrong..");
+
         var product = await _productRepository.GetUserProductByIdAsync(request.UserId,
-                                                                            request.ProductId);
+                                                                       request.ProductId);
         if (product is null)
-        {
-            return Error.NotFound();
-        }
+            return Error.NotFound("product with this id is not exist in your product list..");
+
         _productRepository.Remove(product);
 
         return true;

@@ -33,37 +33,37 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Product>()
-            .HasIndex(p => new { p.Id, p.ManufactureEmail, p.ProduceDate })
-            .IsUnique();
+                    .HasIndex(p => new { p.Id, p.ManufactureEmail, p.ProduceDate })
+                    .IsUnique();
 
         modelBuilder.Entity<Product>()
-          .Property(p => p.ManufactureEmail)
-          .IsRequired()
-          .HasMaxLength(255);
+                    .Property(p => p.ManufactureEmail)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
         modelBuilder.Entity<Product>()
-          .Property(p => p.ManufacturePhone)
-          .IsRequired()
-          .HasMaxLength(255);
+                    .Property(p => p.ManufacturePhone)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
         modelBuilder.Entity<Product>()
-            .Property(p => p.ProduceDate)
-            .IsRequired();
+                    .Property(p => p.ProduceDate)
+                    .IsRequired();
 
         modelBuilder.Entity<Product>()
-            .Property(p => p.UserId)
-            .IsRequired();
+                    .Property(p => p.UserId)
+                    .IsRequired();
             
         modelBuilder.Entity<Product>()
-            .Property(p => p.Name)
-            .IsRequired()
-            .HasMaxLength(255);
+                    .Property(p => p.Name)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
         modelBuilder.Entity<Product>()
-        .HasOne<IdentityUser>()
-        .WithMany()
-        .HasForeignKey(x => x.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
+                    .HasOne<IdentityUser>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
 
 

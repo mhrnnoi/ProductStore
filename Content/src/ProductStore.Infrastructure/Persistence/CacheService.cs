@@ -28,12 +28,13 @@ public class CacheService : ICacheService
     {
 
         var expiryTime = _dateTimeProvider.UtcNow.AddMinutes(_jwtOptions.ExpiryMinutes)
-                            .Subtract(_dateTimeProvider.UtcNow);
+                                                 .Subtract(_dateTimeProvider.UtcNow);
         if (_jwtOptions.ExpiryMinutes < 1)
-        {
             return false;
-        } 
-        return _cacheDb.StringSet(token, JsonSerializer.Serialize(true), expiryTime);
+
+        return _cacheDb.StringSet(token,
+                                  JsonSerializer.Serialize(true),
+                                  expiryTime);
     }
 
     public T? GetData<T>(string key)
@@ -65,9 +66,9 @@ public class CacheService : ICacheService
     {
         var expiryTime = expirationTime.DateTime.Subtract(_dateTimeProvider.UtcNow);
         if (expirationTime <= _dateTimeProvider.UtcNow)
-        {
             return false;
-        }
-        return _cacheDb.StringSet(key, JsonSerializer.Serialize(value), expiryTime);
+        return _cacheDb.StringSet(key,
+                                 JsonSerializer.Serialize(value),
+                                 expiryTime);
     }
 }

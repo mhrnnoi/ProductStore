@@ -33,20 +33,17 @@ public class EditProductCommandHandler :
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-        {
-            return Error.NotFound();
-        }
+            return Error.Failure("something went wrong..");
+
         var product = await _productRepository.GetUserProductByIdAsync(request.UserId,
-                                                                            request.id);
+                                                                            request.ProductId);
         if (product is null)
-        {
-            return Error.NotFound();
-        }
-        var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate);
+            return Error.NotFound("product with this id is not exist in your product list..");
+
+        var isUniqueByEmailAndDate = await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate);
         if (!isUniqueByEmailAndDate)
-        {
-            return Error.Failure();
-        }
+            return Error.Failure("there is a product with this email and produce date ");
+
         var editedProduct = _mapper.Map<Product>(request);
         _productRepository.Update(editedProduct);
         await _unitOfWork.SaveChangesAsync();

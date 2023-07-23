@@ -6,5 +6,7 @@ public class GetUserProductsByIdQueryValidator : AbstractValidator<GetUserProduc
 {
     public GetUserProductsByIdQueryValidator()
     {
+        RuleFor(x => x.UserId).NotEmpty()
+                               .WithMessage("Something went wrong..");
     }
 }

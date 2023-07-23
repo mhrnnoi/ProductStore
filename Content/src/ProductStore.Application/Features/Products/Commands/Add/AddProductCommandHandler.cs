@@ -37,18 +37,14 @@ public class AddProductCommandHandler :
         
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-        {
-            return Error.NotFound($"{user.Id}, {request.UserId}");
-        }
+            return Error.Failure("something went wrong..");
         
         var product = _mapper.Map<Product>(request);
         var isUniqueByEmailAndDate =  await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, 
-                                                        request.ProduceDate);
-        
+                                                                                        request.ProduceDate);
         if (!isUniqueByEmailAndDate)
-        {
-            return Error.Failure();
-        }
+            return Error.Failure("there is a product with this email and produce date ");
+
         _productRepository.Add(product);
         await _unitOfWork.SaveChangesAsync();
 

@@ -2,7 +2,6 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Authentication.Commands.DeleteAccount;
 using ProductStore.Application.Features.Authentication.Commands.Login;
@@ -19,13 +18,15 @@ public class AuthenticationController : ApiController
     private readonly IMapper _mapper;
     private readonly IMediator _mediatR;
 
-    public AuthenticationController(IMediator mediatR, IMapper mapper, UserManager<IdentityUser> userManager)
+    public AuthenticationController(IMediator mediatR,
+                                    IMapper mapper)
     {
         _mediatR = mediatR;
         _mapper = mapper;
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
@@ -36,6 +37,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
         var command = _mapper.Map<LoginCommand>(request);

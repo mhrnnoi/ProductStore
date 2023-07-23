@@ -12,8 +12,6 @@ builder.Services.AddApplication()
                 .AddInfrastructure(config)
                 .AddPresentation();
 
-
-
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();

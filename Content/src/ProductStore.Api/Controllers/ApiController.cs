@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +9,10 @@ namespace ProductStore.Api.Controllers;
 [Route("api")]
 public class ApiController : ControllerBase
 {
-    protected string GetUserId(IEnumerable<Claim> claims)
-    {
+    protected string GetUserId(IEnumerable<Claim> claims) => 
+            claims.First(a => a.Type == JwtRegisteredClaimNames.Sub).Value;
 
-        return claims.First(a => a.Type == "id").Value;
-                                                
-    }
+
 
     protected IActionResult Problem(List<Error> errors)
     {

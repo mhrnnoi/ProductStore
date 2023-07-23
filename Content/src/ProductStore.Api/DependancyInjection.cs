@@ -11,13 +11,14 @@ public static class DependancyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        //add token validation middle ware
         services.AddScoped<IsValidAuthenticated>();
 
         services.AddControllers();
 
         services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerGen(AddAuthorization());
+        services.AddSwaggerGen(AddAuthorizeToSwagger());
         services.AddAuthorization();
 
 
@@ -29,7 +30,7 @@ public static class DependancyInjection
         return services;
     }
 
-    private static Action<SwaggerGenOptions> AddAuthorization()
+    private static Action<SwaggerGenOptions> AddAuthorizeToSwagger()
     {
         return option =>
         {
@@ -44,19 +45,19 @@ public static class DependancyInjection
                 Scheme = "Bearer"
             });
             option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
                 }
-            },
-            new string[]{}
-        }
-    });
+            });
         };
 
     }

@@ -27,10 +27,10 @@ public static class depandencyInjection
                     .Enrich.FromLogContext()
                     .CreateLogger();
         services.AddLogging(loggingBuilder =>
-{
-    loggingBuilder.ClearProviders();
-    loggingBuilder.AddSerilog(logger);
-});
+        {
+            loggingBuilder.ClearProviders()
+                          .AddSerilog(logger);
+        });
 
 
         var jwtSettings = new JwtSettings();
@@ -43,7 +43,8 @@ public static class depandencyInjection
         services.AddScoped<IDateTimeProvider, DatetimeProvider>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddAuthentication(AuthOptions()).AddJwtBearer(JwtBearerOptions(jwtSettings));
+        services.AddAuthentication(AuthScheme())
+                                  .AddJwtBearer(JwtBearerOptions(jwtSettings));
 
 
 
@@ -59,7 +60,7 @@ public static class depandencyInjection
         return services;
     }
 
-    private static Action<AuthenticationOptions> AuthOptions()
+    private static Action<AuthenticationOptions> AuthScheme()
     {
         return option =>
         {

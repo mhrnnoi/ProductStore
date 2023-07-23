@@ -19,7 +19,8 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, E
         _mapper = mapper;
     }
 
-    public async Task<ErrorOr<List<Product>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<Product>>> Handle(GetAllProductsQuery request,
+                                                     CancellationToken cancellationToken)
     {
         return await _productRepository.GetAllAsync();
     }

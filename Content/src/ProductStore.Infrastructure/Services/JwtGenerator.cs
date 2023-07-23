@@ -42,10 +42,10 @@ public class JwtGenerator : IJwtGenerator
     {
         return new[]
         {
-                new Claim("id", user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub,"Token"),
+                new Claim(JwtRegisteredClaimNames.Sub,user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, _dateTimeProvider.UtcNow.ToString(CultureInfo.InvariantCulture)),
+                new Claim(JwtRegisteredClaimNames.Iat,
+                            _dateTimeProvider.UtcNow.ToString(CultureInfo.InvariantCulture)),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
             };

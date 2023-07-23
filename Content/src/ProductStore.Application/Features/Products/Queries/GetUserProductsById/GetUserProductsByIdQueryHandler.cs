@@ -13,19 +13,21 @@ public class GetUserProductsByIdQueryHandler : IRequestHandler<GetUserProductsBy
     private readonly IMapper _mapper;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public GetUserProductsByIdQueryHandler(IProductRepository productRepository, IMapper mapper, UserManager<IdentityUser> userManager)
+    public GetUserProductsByIdQueryHandler(IProductRepository productRepository,
+                                           IMapper mapper,
+                                           UserManager<IdentityUser> userManager)
     {
         _productRepository = productRepository;
         _mapper = mapper;
         _userManager = userManager;
     }
-    public async Task<ErrorOr<List<Product>>> Handle(GetUserProductsByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<Product>>> Handle(GetUserProductsByIdQuery request,
+                                                     CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-        {
-            return Error.NotFound();
-        }
+            return Error.NotFound("something went wrong..");
+
         return await _productRepository.GetUserProductsAsync(request.UserId);
 
     }
