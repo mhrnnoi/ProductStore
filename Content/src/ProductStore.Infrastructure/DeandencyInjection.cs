@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ProductStore.Application.Interfaces.Persistence;
@@ -12,6 +13,7 @@ using ProductStore.Infrastructure.Mapping;
 using ProductStore.Infrastructure.Persistence;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using ProductStore.Infrastructure.Services;
+using Serilog;
 
 namespace ProductStore.Infrastructure;
 
@@ -20,6 +22,17 @@ public static class depandencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
                                                         ConfigurationManager configurationManager)
     {
+        var logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(configurationManager)
+                    .Enrich.FromLogContext()
+                    .CreateLogger();
+        services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.ClearProviders();
+    loggingBuilder.AddSerilog(logger);
+});
+
+
         var jwtSettings = new JwtSettings();
         configurationManager.Bind(JwtSettings.SectionName, jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
