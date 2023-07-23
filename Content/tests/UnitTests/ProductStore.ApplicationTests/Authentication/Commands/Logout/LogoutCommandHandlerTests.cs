@@ -1,3 +1,4 @@
+using FluentAssertions;
 using MapsterMapper;
 using Moq;
 using ProductStore.Application.Features.Authentication.Commands.Logout;
@@ -26,15 +27,21 @@ public class LogoutCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_Should_ReturnTrue()
+    public async Task Handle_Should_ReturnTrueAndAddTokenToBlacklist()
     {
 
         //Arrange
-
+        var dateTime =It.IsAny<DateTime>();
+        _dateTimeProviderMock.Setup(x => x.UtcNow.AddMinutes(It.IsAny<int>()))
+                .Returns(dateTime);
+        _cacheServiceMock.Setup(x => x.AddBlacklist(_command.Token, dateTime))
+            .Returns(true);
         //Act
-
+        var result =  await _commandHandler.Handle(_command, default);
 
         //Assert
+        result.Should().Be(true);
+        result.IsError.Should().Be(false);
 
     }
 }
