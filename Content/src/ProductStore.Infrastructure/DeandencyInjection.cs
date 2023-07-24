@@ -14,6 +14,7 @@ using ProductStore.Infrastructure.Persistence;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using ProductStore.Infrastructure.Services;
 using Serilog;
+using Serilog.Events;
 
 namespace ProductStore.Infrastructure;
 
@@ -67,6 +68,7 @@ public static class depandencyInjection
     {
         var logger = new LoggerConfiguration().ReadFrom.Configuration(configurationManager)
                                                       .Enrich.FromLogContext()
+                                                      .MinimumLevel.Information()
                                                       .CreateLogger();
         loggingBuilder.ClearProviders();
         loggingBuilder.AddSerilog(logger);

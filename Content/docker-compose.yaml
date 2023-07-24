@@ -9,7 +9,7 @@ services:
         ports:
             - "8080:80"
         depends_on:
-          - database
+            - database
         environment:
             CONNECTION_STRING: "Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True"
     database:
@@ -21,9 +21,10 @@ services:
         ports:
             - "1433:1433"
         depends_on:
-          - redis
+            - redis
         volumes:
             - sql_server_data:/var/opt/mssql
+
     redis:
         container_name: redis
         image: redis
