@@ -40,7 +40,7 @@ public static class depandencyInjection
 
         services.AddDbContext<AppDbContext>(Options =>
         {
-            Options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True");
+            Options.UseSqlServer(GetDefaultConnection(configurationManager));
         });
 
         services.AddMapping();
@@ -56,6 +56,11 @@ public static class depandencyInjection
         configurationManager.Bind(JwtSettings.SectionName, jwtSettings);
         services.AddSingleton(Options.Create(jwtSettings));
         return jwtSettings;
+    }
+    private static string GetDefaultConnection(ConfigurationManager configurationManager)
+    {
+        var connectionString = configurationManager.GetConnectionString(ConnectionStringSettings.DefaultConnection);
+        return connectionString;
     }
 
     private static void AddLogger(ConfigurationManager configurationManager, ILoggingBuilder loggingBuilder)
