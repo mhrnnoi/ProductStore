@@ -110,7 +110,7 @@ public class EditProductCommandHandlerTests
 
     }
     [Fact]
-    public async void Handle_ShouldReturnBadRequest_WhenUserWithIdIsNotExist()
+    public async void Handle_ShouldReturnNotFound_WhenUserWithIdIsNotExist()
     {
         //Arrange
 
@@ -121,7 +121,7 @@ public class EditProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure(description:"something went wrong.. maybe you need to login again"));
+        result.FirstError.Should().Be(Error.NotFound(description:"something went wrong.. maybe you need to login again"));
 
     }
     [Fact]

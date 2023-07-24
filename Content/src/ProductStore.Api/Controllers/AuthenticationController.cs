@@ -2,6 +2,7 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProductStore.Application.Features.Authentication.Commands.DeleteAccount;
 using ProductStore.Application.Features.Authentication.Commands.Login;
 using ProductStore.Application.Features.Authentication.Commands.Register;
 using ProductStore.Contracts.Authentication.Requests;
@@ -41,7 +42,15 @@ public class AuthenticationController : ApiController
                              errors => Problem(errors));
     }
 
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccountAsync([FromBody] DeleteAccountRequest request)
+    {
+        var command = _mapper.Map<DeleteAccountCommand>(request);
+        var result = await _mediatR.Send(command);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
 
 
-
+    }
 }

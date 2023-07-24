@@ -56,7 +56,7 @@ public class GetUserProductsByIdQueryHandlerTests
         _productRepositoryMock.Verify(x => x.GetUserProductsAsync(userId), Times.Once);
     }
     [Fact]
-    public async void Handle_ShouldReturnFailure_WhenUserIsNotExist()
+    public async void Handle_ShouldReturnNotFound_WhenUserIsNotExist()
     {
         //Arrange
         var userId = It.IsAny<string>();
@@ -69,7 +69,7 @@ public class GetUserProductsByIdQueryHandlerTests
         //Assert
 
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure(description: "User With this id is not exist.."));
+        result.FirstError.Should().Be(Error.NotFound(description: "User With this id is not exist.."));
     }
 
 }

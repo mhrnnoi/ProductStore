@@ -86,7 +86,7 @@ public class DeleteProductCommandHandlerTests
 
     }
     [Fact]
-    public async Task Handle_ShouldReturnBadRequest_WhenUserWithIdIsNotExist()
+    public async Task Handle_ShouldReturnNotFound_WhenUserWithIdIsNotExist()
     {
         //Arrange
         _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
@@ -95,7 +95,7 @@ public class DeleteProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure(description:"something went wrong.. maybe you need to login again"));
+        result.FirstError.Should().Be(Error.NotFound(description:"something went wrong.. maybe you need to login again"));
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
 
 

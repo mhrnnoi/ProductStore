@@ -40,7 +40,7 @@ public static class depandencyInjection
 
         services.AddDbContext<AppDbContext>(Options =>
         {
-            Options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+            Options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True");
         });
 
         services.AddMapping();

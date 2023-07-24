@@ -7,7 +7,7 @@ public record AddProductRequest(bool IsAvailable,
                                 string ManufacturePhone,
                                 string Name)
 {
-    [DataType(DataType.Date)]
+    [DataType(DataType.Date, ErrorMessage = "Please enter a valid date.")]
     public DateTime ProduceDate { get; set; }
 }
 

@@ -24,7 +24,7 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
 
         if (options.IsConfigured == false)
         {
-            options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;Integrated Security=true;");
+            options.UseSqlServer("Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True");
         }
 
     }
@@ -53,7 +53,7 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
         modelBuilder.Entity<Product>()
                     .Property(p => p.UserId)
                     .IsRequired();
-            
+
         modelBuilder.Entity<Product>()
                     .Property(p => p.Name)
                     .IsRequired()
@@ -62,7 +62,8 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
         modelBuilder.Entity<Product>()
                     .HasOne<IdentityUser>()
                     .WithMany()
-                    .HasForeignKey(x => x.UserId);
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
 
 

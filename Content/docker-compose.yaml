@@ -11,7 +11,7 @@ services:
         depends_on:
           - database
         environment:
-            CONNECTION_STRING: "Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True;Integrated Security=true;"
+            CONNECTION_STRING: "Server=sqlserver;Database=ProductStore;User Id=SA;Password=Passwordcomplex6690;MultipleActiveResultSets=true;TrustServerCertificate=True"
     database:
         container_name: sqlserver
         image: mcr.microsoft.com/mssql/server

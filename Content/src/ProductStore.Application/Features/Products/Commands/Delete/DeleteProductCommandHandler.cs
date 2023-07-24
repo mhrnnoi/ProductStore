@@ -32,7 +32,7 @@ public class DeleteProductCommandHandler :
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.Failure(description :"something went wrong.. maybe you need to login again");
+            return Error.NotFound(description :"something went wrong.. maybe you need to login again");
 
         var product = await _productRepository.GetUserProductByIdAsync(request.UserId,
                                                                        request.ProductId);

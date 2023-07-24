@@ -10,18 +10,29 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, E
 {
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly ICacheService _chacheService;
 
 
     public GetAllProductsQueryHandler(IProductRepository productRepository,
-                                      IMapper mapper)
+                                      IMapper mapper,
+                                      ICacheService chacheService)
     {
         _productRepository = productRepository;
         _mapper = mapper;
+        _chacheService = chacheService;
     }
 
     public async Task<ErrorOr<List<Product>>> Handle(GetAllProductsQuery request,
                                                      CancellationToken cancellationToken)
     {
-        return await _productRepository.GetAllAsync();
+        var productsInRedis = _chacheService.GetData<List<Product>>("products");
+        if (productsInRedis is null || productsInRedis.Count < 1)
+        {
+            var expiryTime = DateTimeOffset.Now.AddSeconds(30);
+            var products = await _productRepository.GetAllAsync();
+            _chacheService.SetData<List<Product>>("products", products, expiryTime);
+            return products;
+        }
+        return productsInRedis;
     }
 }

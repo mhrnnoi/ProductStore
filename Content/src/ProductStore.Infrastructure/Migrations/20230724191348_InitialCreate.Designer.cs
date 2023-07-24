@@ -12,8 +12,8 @@ using ProductStore.Infrastructure.Persistence.DataContext;
 namespace ProductStore.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230722102931_Initialcreate")]
-    partial class Initialcreate
+    [Migration("20230724191348_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -9,7 +9,8 @@ public record EditProductRequest(int ProductId,
                                  string Name)
 {
 
-    [DataType(DataType.Date)]
+        [DataType(DataType.Date, ErrorMessage = "Please enter a valid date.")]
+
     public DateTime ProduceDate { get; set; }
 }
 

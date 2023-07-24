@@ -11,9 +11,10 @@ public class AddProductCommandValidator :
         RuleFor(x => x.UserId).NotEmpty()
                               .WithMessage("something went wrong.. maybe you need to login again");
 
-        RuleFor(x => x.IsAvailable).NotNull()
-                                   .WithMessage("Availability must be specified.");
 
+        RuleFor(x => x.IsAvailable).NotNull()
+                                   .WithMessage("Availability must be specified with true or false.")
+                                   .Must(x => x == true || x == false);
         RuleFor(x => x.ManufactureEmail).NotEmpty()
                                         .EmailAddress()
                                         .WithMessage("Plz enter valid email.");

@@ -102,7 +102,7 @@ public class AddProductCommandHandlerTests
 
     }
     [Fact]
-    public async Task Handle_ShouldReturnBadRequest_WhenUserNotExistAsync()
+    public async Task Handle_ShouldReturnNotFound_WhenUserNotExistAsync()
     {
         //Arrange
         var user = new IdentityUser() { Id = _command.UserId };
@@ -114,7 +114,7 @@ public class AddProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure(description: "something went wrong.. maybe you need to login again"));
+        result.FirstError.Should().Be(Error.NotFound(description: "something went wrong.. maybe you need to login again"));
 
     }
 
