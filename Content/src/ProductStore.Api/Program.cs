@@ -11,9 +11,12 @@ builder.Services.AddApplication()
                 .AddInfrastructure(config, builder.Logging)
                 .AddPresentation();
 
+
+var errorPath = "/error";
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseExceptionHandler(errorPath);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

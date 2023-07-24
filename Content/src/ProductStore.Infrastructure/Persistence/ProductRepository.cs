@@ -32,7 +32,7 @@ public class ProductRepository : IProductRepository
     {
         var isNotUnique = await _context.AnyAsync(
                 x => x.ManufactureEmail == email &&
-                        x.ProduceDate == date);
+                        x.ProduceDate.Date == date.Date);
 
         if (isNotUnique)
             return false;
@@ -55,14 +55,14 @@ public class ProductRepository : IProductRepository
 
     public async Task<List<Product>> GetUserProductsAsync(string userId)
     {
-        return  await _context.Where(x => x.UserId == userId)
+        return await _context.Where(x => x.UserId == userId)
                               .ToListAsync();
     }
 
 
     public async Task<Product?> GetUserProductByIdAsync(string userId, int productId)
     {
-        return  await _context.FirstOrDefaultAsync(x => x.UserId == userId &&
+        return await _context.FirstOrDefaultAsync(x => x.UserId == userId &&
                                                     x.Id == productId);
     }
 }

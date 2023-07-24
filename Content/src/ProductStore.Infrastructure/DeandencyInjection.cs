@@ -23,16 +23,9 @@ public static class depandencyInjection
                                                         ConfigurationManager configurationManager,
                                                         ILoggingBuilder loggingBuilder)
     {
-        var logger = new LoggerConfiguration().ReadFrom.Configuration(configurationManager)
-                                              .Enrich.FromLogContext()
-                                              .CreateLogger();
-        loggingBuilder.ClearProviders();
-        loggingBuilder.AddSerilog(logger);
+        AddLogger(configurationManager, loggingBuilder);
 
-
-        var jwtSettings = new JwtSettings();
-        configurationManager.Bind(JwtSettings.SectionName, jwtSettings);
-        services.AddSingleton(Options.Create(jwtSettings));
+        JwtSettings jwtSettings = AddJwtSettings(services, configurationManager);
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IJwtGenerator, JwtGenerator>();
@@ -55,6 +48,23 @@ public static class depandencyInjection
 
 
         return services;
+    }
+
+    private static JwtSettings AddJwtSettings(IServiceCollection services, ConfigurationManager configurationManager)
+    {
+        var jwtSettings = new JwtSettings();
+        configurationManager.Bind(JwtSettings.SectionName, jwtSettings);
+        services.AddSingleton(Options.Create(jwtSettings));
+        return jwtSettings;
+    }
+
+    private static void AddLogger(ConfigurationManager configurationManager, ILoggingBuilder loggingBuilder)
+    {
+        var logger = new LoggerConfiguration().ReadFrom.Configuration(configurationManager)
+                                                      .Enrich.FromLogContext()
+                                                      .CreateLogger();
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger);
     }
 
     private static Action<AuthenticationOptions> AuthScheme()

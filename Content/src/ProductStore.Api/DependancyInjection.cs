@@ -10,7 +10,6 @@ public static class DependancyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        //add token validation middle ware
 
         services.AddControllers();
 

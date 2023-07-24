@@ -62,8 +62,7 @@ public class AppDbContext : IdentityUserContext<IdentityUser>
         modelBuilder.Entity<Product>()
                     .HasOne<IdentityUser>()
                     .WithMany()
-                    .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .HasForeignKey(x => x.UserId);
 
 
 
