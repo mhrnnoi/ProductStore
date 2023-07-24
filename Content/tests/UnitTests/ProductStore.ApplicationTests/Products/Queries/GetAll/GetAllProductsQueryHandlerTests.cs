@@ -16,12 +16,19 @@ public class GetAllProductsQueryHandlerTests
     private readonly GetAllProductsQuery _query;
     private readonly GetAllProductsQueryHandler _queryHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+        private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+
     public GetAllProductsQueryHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManagerMock = new();
+                        _userStoreMock = new();
+
+                       _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+
+
 
         _query = new GetAllProductsQuery();
 

@@ -17,15 +17,17 @@ public class AddProductCommandHandlerTests
     private readonly AddProductCommand _command;
     private readonly AddProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
-    private readonly Mock<ICacheService> _cacheServiceMock;
+    private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
 
     public AddProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManagerMock = new();
-        _cacheServiceMock = new();
+        _userStoreMock = new();
+
+        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+
 
         _command = new AddProductCommand(It.IsAny<string>(),
                                          It.IsAny<bool>(),
@@ -37,8 +39,7 @@ public class AddProductCommandHandlerTests
         _commandHandler = new AddProductCommandHandler(_unitOfWorkMock.Object,
                                                        _productRepositoryMock.Object,
                                                        _mapperMock.Object,
-                                                       _userManagerMock.Object,
-                                                       _cacheServiceMock.Object);
+                                                       _userManagerMock.Object);
     }
 
 
@@ -79,7 +80,7 @@ public class AddProductCommandHandlerTests
     public async Task Handle_ShouldReturnBadRequest_WhenNoUniqueEmailAndDateAsync()
     {
         //Arrange
-        var user = new IdentityUser() { Id = _command.UserId  };
+        var user = new IdentityUser() { Id = _command.UserId };
 
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
@@ -97,14 +98,14 @@ public class AddProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("there is a product with this email and produce date "));
+        result.FirstError.Should().Be(Error.Failure(description: "there is a product with this email and produce date "));
 
     }
     [Fact]
     public async Task Handle_ShouldReturnBadRequest_WhenUserNotExistAsync()
     {
         //Arrange
-        var user = new IdentityUser() { Id = _command.UserId  };
+        var user = new IdentityUser() { Id = _command.UserId };
 
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync((IdentityUser?)null);
@@ -113,7 +114,7 @@ public class AddProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
+        result.FirstError.Should().Be(Error.Failure(description: "something went wrong.. maybe you need to login again"));
 
     }
 

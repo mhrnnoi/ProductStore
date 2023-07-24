@@ -18,13 +18,18 @@ public class DeleteProductCommandHandlerTests
     private readonly DeleteProductCommand _command;
     private readonly DeleteProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+        private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+
 
     public DeleteProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManagerMock = new();
+                _userStoreMock = new();
+                        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+
 
         _command = new DeleteProductCommand(It.IsAny<string>(), It.IsAny<int>());
 
@@ -77,7 +82,7 @@ public class DeleteProductCommandHandlerTests
         //Assert
         result.IsError.Should().Be(true);
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
-        result.FirstError.Should().Be(Error.NotFound("product with this id is not exist in your product list.."));
+        result.FirstError.Should().Be(Error.NotFound(description:"product with this id is not exist in your product list.."));
 
     }
     [Fact]
@@ -90,7 +95,7 @@ public class DeleteProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
+        result.FirstError.Should().Be(Error.Failure(description:"something went wrong.. maybe you need to login again"));
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
 
 

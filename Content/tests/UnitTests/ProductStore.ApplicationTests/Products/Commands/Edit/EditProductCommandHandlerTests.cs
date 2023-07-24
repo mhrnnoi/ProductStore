@@ -18,12 +18,19 @@ public class EditProductCommandHandlerTests
     private readonly EditProductCommand _command;
     private readonly EditProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+        private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+
     public EditProductCommandHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManagerMock = new();
+                _userStoreMock = new();
+
+                _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+
+
+
 
         _command = new EditProductCommand(It.IsAny<int>(),
                                           It.IsAny<string>(),
@@ -98,12 +105,12 @@ public class EditProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.NotFound("product with this id is not exist in your product list.."));
+        result.FirstError.Should().Be(Error.NotFound(description:"product with this id is not exist in your product list.."));
         
 
     }
     [Fact]
-    public async void Handle_ShouldReturnNotFound_WhenUserWithIdIsNotExist()
+    public async void Handle_ShouldReturnBadRequest_WhenUserWithIdIsNotExist()
     {
         //Arrange
 
@@ -114,7 +121,7 @@ public class EditProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.NotFound("something went wrong.."));
+        result.FirstError.Should().Be(Error.Failure(description:"something went wrong.. maybe you need to login again"));
 
     }
     [Fact]
@@ -126,8 +133,9 @@ public class EditProductCommandHandlerTests
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
+        var product = new Product(){UserId = user.Id};
         _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.ProductId))
-                     .ReturnsAsync(It.IsAny<Product>());
+                     .ReturnsAsync(product);
         _productRepositoryMock.Setup(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
                                                                         _command.ProduceDate))
                                .ReturnsAsync(false);
@@ -136,7 +144,7 @@ public class EditProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("there is a product with this email and produce date "));
+        result.FirstError.Should().Be(Error.Failure(description:"there is a product with this email and produce date "));
 
     }
 

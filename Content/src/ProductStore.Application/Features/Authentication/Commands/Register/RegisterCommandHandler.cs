@@ -16,19 +16,16 @@ public class RegisterCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtGenerator _jwtGenerator;
-    private readonly ICacheService _cacheService;
 
     public RegisterCommandHandler(IUnitOfWork unitOfWork,
                                   UserManager<IdentityUser> userManager,
                                   IMapper mapper,
-                                  IJwtGenerator jwtGenerator,
-                                  ICacheService cacheService)
+                                  IJwtGenerator jwtGenerator)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _mapper = mapper;
         _jwtGenerator = jwtGenerator;
-        _cacheService = cacheService;
     }
 
 

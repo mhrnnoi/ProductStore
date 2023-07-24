@@ -17,6 +17,8 @@ public class LoginCommandHandlerTests
     private readonly LoginCommand _command;
     private readonly LoginCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+    private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+
     private readonly Mock<IJwtGenerator> _JwtGeneratorMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
@@ -26,6 +28,9 @@ public class LoginCommandHandlerTests
         _mapperMock = new();
         _JwtGeneratorMock = new();
         _unitOfWorkMock = new();
+        _userStoreMock = new();
+
+        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
 
         _command = new LoginCommand(It.IsAny<string>(), It.IsAny<string>());
         _commandHandler = new LoginCommandHandler(
@@ -46,7 +51,7 @@ public class LoginCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
+        result.FirstError.Should().Be(Error.Failure(description: "Bad Credential"));
     }
 
     [Fact]
@@ -66,7 +71,7 @@ public class LoginCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("Bad Credential"));
+        result.FirstError.Should().Be(Error.Failure(description: "Bad Credential"));
     }
 
 
@@ -74,8 +79,6 @@ public class LoginCommandHandlerTests
     public async Task Handle_Should_ReturnAuthResult_WhenInputIsValid()
     {
         //Arrange
-
-
         var user = new IdentityUser()
         {
             Email = _command.Email,
@@ -112,8 +115,8 @@ public class LoginCommandHandlerTests
                                      Times.Once);
         _userManagerMock.Verify(x => x.CheckPasswordAsync(user, _command.Password),
                                      Times.Once);
-        _JwtGeneratorMock.Verify(x => x.GenerateToken(user), Times.Never);
-        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        _JwtGeneratorMock.Verify(x => x.GenerateToken(user), Times.Once);
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
 
 
 

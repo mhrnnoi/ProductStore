@@ -16,13 +16,15 @@ public class GetUserProductsByIdQueryHandlerTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly GetUserProductsByIdQuery _query;
     private readonly GetUserProductsByIdQueryHandler _queryHandler;
+    private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     public GetUserProductsByIdQueryHandlerTests()
     {
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-        _userManagerMock = new();
+        _userStoreMock = new();
+        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
 
         _query = new GetUserProductsByIdQuery(It.IsAny<string>());
 
@@ -36,7 +38,7 @@ public class GetUserProductsByIdQueryHandlerTests
     {
         //Arrange
         var userId = _query.UserId;
-        var user = new IdentityUser() {Id = userId};
+        var user = new IdentityUser() { Id = userId };
         var products = new List<Product>();
         _userManagerMock.Setup(x => x.FindByIdAsync(userId))
                     .ReturnsAsync(user);
@@ -67,7 +69,7 @@ public class GetUserProductsByIdQueryHandlerTests
         //Assert
 
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.Failure("something went wrong.."));
+        result.FirstError.Should().Be(Error.Failure(description: "User With this id is not exist.."));
     }
 
 }
