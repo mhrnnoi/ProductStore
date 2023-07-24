@@ -55,10 +55,10 @@ public class EditProductCommandHandlerTests
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                         .ReturnsAsync(user);
 
-        var product = new Product() {Id = _command.ProductId,
+        var product = new Product() {Id = _command.Id,
                                      UserId = _command.UserId};
 
-        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.ProductId))
+        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.Id))
                      .ReturnsAsync(product);
 
         _productRepositoryMock.Setup(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
@@ -97,7 +97,7 @@ public class EditProductCommandHandlerTests
         _userManagerMock.Setup(x => x.FindByIdAsync(user.Id))
                      .ReturnsAsync(user);
 
-        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.ProductId))
+        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.Id))
                      .ReturnsAsync((Product?)null);
 
 
@@ -134,7 +134,7 @@ public class EditProductCommandHandlerTests
                      .ReturnsAsync(user);
 
         var product = new Product(){UserId = user.Id};
-        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.ProductId))
+        _productRepositoryMock.Setup(x => x.GetUserProductByIdAsync(_command.UserId, _command.Id))
                      .ReturnsAsync(product);
         _productRepositoryMock.Setup(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
                                                                         _command.ProduceDate))

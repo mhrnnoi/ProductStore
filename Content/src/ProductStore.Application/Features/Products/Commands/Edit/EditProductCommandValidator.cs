@@ -10,7 +10,7 @@ public class EditProductCommandValidator :
     {
         RuleFor(x => x.UserId).NotEmpty()
                               .WithMessage("something went wrong.. maybe you need to login again");
-        RuleFor(x => x.ProductId).NotEmpty()
+        RuleFor(x => x.Id).NotEmpty()
                                  .WithMessage("Product Id is required.");
     
 

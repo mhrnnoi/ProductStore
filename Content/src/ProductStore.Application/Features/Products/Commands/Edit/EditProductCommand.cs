@@ -4,7 +4,7 @@ using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Commands.Edit;
 
-public record EditProductCommand(int ProductId,
+public record EditProductCommand(int Id,
                                  string UserId,
                                  bool IsAvailable,
                                  string ManufactureEmail,

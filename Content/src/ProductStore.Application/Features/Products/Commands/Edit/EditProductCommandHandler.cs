@@ -36,7 +36,8 @@ public class EditProductCommandHandler :
             return Error.NotFound(description: "something went wrong.. maybe you need to login again");
 
         var product = await _productRepository.GetUserProductByIdAsync(request.UserId,
-                                                                            request.ProductId);
+                                                                            request.Id);
+
         if (product is null)
             return Error.NotFound(description: "product with this id is not exist in your product list..");
 
@@ -49,10 +50,10 @@ public class EditProductCommandHandler :
 
 
 
-        var editedProduct = _mapper.Map<Product>(request);
-        _productRepository.Update(editedProduct);
+        product = _mapper.Map<Product>(request);
+        _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync();
-        return editedProduct;
+        return product;
 
     }
 }

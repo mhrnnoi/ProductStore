@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProductStore.Contracts.Products.Requests;
 
-public record EditProductRequest(int ProductId,
+public record EditProductRequest(int Id,
                                  bool IsAvailable,
                                  string ManufactureEmail,
                                  string ManufacturePhone,
