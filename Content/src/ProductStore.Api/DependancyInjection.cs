@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using ProductStore.Api.Middlewares;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -12,7 +11,6 @@ public static class DependancyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         //add token validation middle ware
-        services.AddScoped<IsValidAuthenticated>();
 
         services.AddControllers();
 

@@ -9,7 +9,7 @@ public class AddProductCommandValidator :
     public AddProductCommandValidator()
     {
         RuleFor(x => x.UserId).NotEmpty()
-                              .WithMessage("Something went wrong..");
+                              .WithMessage("something went wrong.. maybe you need to login again");
 
         RuleFor(x => x.IsAvailable).NotNull()
                                    .WithMessage("Availability must be specified.");

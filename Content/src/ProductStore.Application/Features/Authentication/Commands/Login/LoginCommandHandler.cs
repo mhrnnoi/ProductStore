@@ -16,19 +16,16 @@ public class LoginCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtGenerator _jwtGenerator;
-    private readonly ICacheService _cacheService;
 
     public LoginCommandHandler(IUnitOfWork unitOfWork,
-                                    UserManager<IdentityUser> userManager,
-                                    IMapper mapper,
-                                    IJwtGenerator jwtGenerator,
-                                    ICacheService cacheService)
+                               UserManager<IdentityUser> userManager,
+                               IMapper mapper,
+                               IJwtGenerator jwtGenerator)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _mapper = mapper;
         _jwtGenerator = jwtGenerator;
-        _cacheService = cacheService;
     }
 
 
@@ -38,20 +35,16 @@ public class LoginCommandHandler :
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
 
         if (managedUser is null)
-            return Error.Failure("Bad Credential");
+            return Error.Failure(description: "Bad Credential");
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser,
                                                                     request.Password);
         if (!isPasswordValid)
-            return Error.Failure("Bad Credential");
+            return Error.Failure(description: "Bad Credential");
 
 
         var token = _jwtGenerator.GenerateToken(managedUser);
-        var activeTokenResult = _cacheService.UserActiveToken(managedUser.Id, token);
-        if (!activeTokenResult)
-            return Error.Failure("Something Went Wrong..");
 
-            
         await _unitOfWork.SaveChangesAsync();
         var authResult = _mapper.Map<AuthResult>(managedUser);
         authResult = authResult with { Token = token };

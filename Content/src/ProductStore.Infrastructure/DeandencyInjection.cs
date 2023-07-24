@@ -20,17 +20,14 @@ namespace ProductStore.Infrastructure;
 public static class depandencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
-                                                        ConfigurationManager configurationManager)
+                                                        ConfigurationManager configurationManager,
+                                                        ILoggingBuilder loggingBuilder)
     {
-        var logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(configurationManager)
-                    .Enrich.FromLogContext()
-                    .CreateLogger();
-        services.AddLogging(loggingBuilder =>
-        {
-            loggingBuilder.ClearProviders()
-                          .AddSerilog(logger);
-        });
+        var logger = new LoggerConfiguration().ReadFrom.Configuration(configurationManager)
+                                              .Enrich.FromLogContext()
+                                              .CreateLogger();
+        loggingBuilder.ClearProviders();
+        loggingBuilder.AddSerilog(logger);
 
 
         var jwtSettings = new JwtSettings();
@@ -64,7 +61,7 @@ public static class depandencyInjection
     {
         return option =>
         {
-            
+
             option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,6 +74,7 @@ public static class depandencyInjection
         return options =>
         {
             options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateIssuer = true,

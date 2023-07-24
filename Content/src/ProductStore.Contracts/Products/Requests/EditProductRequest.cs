@@ -1,8 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ProductStore.Contracts.Products.Requests;
 
-public record EditProductRequest(int id,
+public record EditProductRequest(int ProductId,
                                  bool IsAvailable,
                                  string ManufactureEmail,
                                  string ManufacturePhone,
-                                 DateTime ProduceDate,
-                                 string Name);
+                                 string Name)
+{
+
+    [DataType(DataType.Date)]
+    public DateTime ProduceDate { get; set; }
+}
+

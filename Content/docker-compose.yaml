@@ -20,6 +20,8 @@ services:
             - SA_PASSWORD=Passwordcomplex6690
         ports:
             - "1433:1433"
+        depends_on:
+          - redis
         volumes:
             - sql_server_data:/var/opt/mssql
     redis:

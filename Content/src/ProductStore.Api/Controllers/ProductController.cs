@@ -12,6 +12,7 @@ using ProductStore.Contracts.Products.Requests;
 namespace ProductStore.Api.Controllers;
 
 [Route("api/[controller]/[action]")]
+[Authorize]
 public class ProductController : ApiController
 {
     private readonly IMapper _mapper;
@@ -24,11 +25,11 @@ public class ProductController : ApiController
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
     {
 
         var userId = GetUserId(User.Claims);
+        
         var command = _mapper.Map<AddProductCommand>(request);
         command = command with { UserId = userId };
         var result = await _mediatR.Send(command);
@@ -38,7 +39,6 @@ public class ProductController : ApiController
     }
 
     [HttpDelete("{productId}")]
-    [Authorize]
     public async Task<IActionResult> DeleteProductAsync(int productId)
     {
 
@@ -51,7 +51,6 @@ public class ProductController : ApiController
     }
 
     [HttpPut]
-    [Authorize]
     public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request)
     {
 

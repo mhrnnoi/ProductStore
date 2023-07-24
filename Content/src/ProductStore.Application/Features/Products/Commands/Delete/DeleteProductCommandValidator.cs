@@ -9,7 +9,7 @@ public class DeleteProductCommandValidator :
     public DeleteProductCommandValidator()
     {
          RuleFor(x => x.UserId).NotEmpty()
-                               .WithMessage("Something went wrong..");
+                               .WithMessage("something went wrong.. maybe you need to login again");
          RuleFor(x => x.ProductId).NotEmpty()
                                .WithMessage("Product Id  is required.");
     }

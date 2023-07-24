@@ -10,7 +10,7 @@ namespace ProductStore.Api.Controllers;
 public class ApiController : ControllerBase
 {
     protected string GetUserId(IEnumerable<Claim> claims) => 
-            claims.First(a => a.Type == JwtRegisteredClaimNames.Sub).Value;
+            claims.First(a => a.Type == ClaimTypes.NameIdentifier).Value;
 
 
 

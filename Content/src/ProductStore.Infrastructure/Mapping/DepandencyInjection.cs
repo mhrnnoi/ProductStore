@@ -13,6 +13,7 @@ public static class DepandencyInjection
         config.Scan(Assembly.GetExecutingAssembly());
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
+        
         return services;
     }
 
