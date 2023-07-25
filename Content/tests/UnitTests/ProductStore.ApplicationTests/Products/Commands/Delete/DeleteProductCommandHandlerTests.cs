@@ -18,7 +18,8 @@ public class DeleteProductCommandHandlerTests
     private readonly DeleteProductCommand _command;
     private readonly DeleteProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
-        private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+    private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+    private readonly Mock<ICacheService> _chacheServiceMock;
 
 
     public DeleteProductCommandHandlerTests()
@@ -26,8 +27,10 @@ public class DeleteProductCommandHandlerTests
         _productRepositoryMock = new();
         _mapperMock = new();
         _unitOfWorkMock = new();
-                _userStoreMock = new();
-                        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
+        _chacheServiceMock = new();
+
+        _userStoreMock = new();
+        _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
 
 
 
@@ -36,7 +39,8 @@ public class DeleteProductCommandHandlerTests
         _commandHandler = new DeleteProductCommandHandler(_unitOfWorkMock.Object,
                                                           _productRepositoryMock.Object,
                                                           _mapperMock.Object,
-                                                          _userManagerMock.Object);
+                                                          _userManagerMock.Object,
+                                                          _chacheServiceMock.Object);
     }
 
     [Fact]
@@ -63,6 +67,8 @@ public class DeleteProductCommandHandlerTests
         _productRepositoryMock.Verify(x => x.GetUserProductByIdAsync(user.Id, product.Id),
                                                                              Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        _chacheServiceMock.Verify(x => x.RemoveData("products"),
+                                     Times.Once);
 
 
     }
@@ -82,7 +88,7 @@ public class DeleteProductCommandHandlerTests
         //Assert
         result.IsError.Should().Be(true);
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
-        result.FirstError.Should().Be(Error.NotFound(description:"product with this id is not exist in your product list.."));
+        result.FirstError.Should().Be(Error.NotFound(description: "product with this id is not exist in your product list.."));
 
     }
     [Fact]
@@ -95,7 +101,7 @@ public class DeleteProductCommandHandlerTests
         var result = await _commandHandler.Handle(_command, default);
         //Assert
         result.IsError.Should().Be(true);
-        result.FirstError.Should().Be(Error.NotFound(description:"something went wrong.. maybe you need to login again"));
+        result.FirstError.Should().Be(Error.NotFound(description: "something went wrong.. maybe you need to login again"));
         _productRepositoryMock.Verify(x => x.Remove(It.IsAny<Product>()), Times.Never);
 
 

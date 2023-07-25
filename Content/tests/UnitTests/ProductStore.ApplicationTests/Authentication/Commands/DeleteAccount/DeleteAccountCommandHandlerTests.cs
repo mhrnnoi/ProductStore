@@ -15,6 +15,7 @@ public class DeleteAccountCommandHandlerTests
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+    private readonly Mock<ICacheService> _chacheServiceMock;
 
 
 
@@ -23,13 +24,14 @@ public class DeleteAccountCommandHandlerTests
         _userStoreMock = new();
 
         _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
-
+        _chacheServiceMock = new();
         _unitOfWorkMock = new();
 
         _command = new DeleteAccountCommand(It.IsAny<string>(), It.IsAny<string>());
         _commandHandler = new DeleteAccountCommandHandler(
             _unitOfWorkMock.Object,
-           _userManagerMock.Object
+           _userManagerMock.Object,
+           _chacheServiceMock.Object
 
            );
     }
@@ -84,6 +86,8 @@ public class DeleteAccountCommandHandlerTests
                             .ReturnsAsync(true);
         _userManagerMock.Setup(x => x.DeleteAsync(user))
                             .ReturnsAsync(IdentityResult.Success);
+        _chacheServiceMock.Setup(x => x.RemoveData("products"));
+
 
 
 
@@ -104,6 +108,8 @@ public class DeleteAccountCommandHandlerTests
         _userManagerMock.Verify(x => x.DeleteAsync(user),
                                      Times.Once);
         _unitOfWorkMock.Verify(x => x.SaveChangesAsync(),
+                                     Times.Once);
+        _chacheServiceMock.Verify(x => x.RemoveData("products"),
                                      Times.Once);
 
     }

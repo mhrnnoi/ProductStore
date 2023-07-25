@@ -14,17 +14,21 @@ public class DeleteProductCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<IdentityUser> _userManager;
+        private readonly ICacheService _chacheService;
+
 
 
     public DeleteProductCommandHandler(IUnitOfWork unitOfWork,
                                     IProductRepository productRepository,
                                     IMapper mapper,
-                                    UserManager<IdentityUser> userManager)
+                                    UserManager<IdentityUser> userManager,
+                                    ICacheService chacheService)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
         _mapper = mapper;
         _userManager = userManager;
+        _chacheService = chacheService;
     }
 
 
@@ -44,6 +48,7 @@ public class DeleteProductCommandHandler :
 
         _productRepository.Remove(product);
         await _unitOfWork.SaveChangesAsync();
+        _chacheService.RemoveData("products");
 
         return true;
 

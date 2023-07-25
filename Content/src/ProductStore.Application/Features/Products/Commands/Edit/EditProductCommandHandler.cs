@@ -15,17 +15,20 @@ public class EditProductCommandHandler :
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly ICacheService _chacheService;
 
 
     public EditProductCommandHandler(IUnitOfWork unitOfWork,
                                     IProductRepository productRepository,
                                     IMapper mapper,
-                                    UserManager<IdentityUser> userManager)
+                                    UserManager<IdentityUser> userManager,
+                                    ICacheService chacheService)
     {
         _unitOfWork = unitOfWork;
         _productRepository = productRepository;
         _mapper = mapper;
         _userManager = userManager;
+        _chacheService = chacheService;
     }
 
 
@@ -45,15 +48,26 @@ public class EditProductCommandHandler :
         if (!isUniqueByEmailAndDate)
         {
             if (request.ManufactureEmail != product.ManufactureEmail && request.ProduceDate != product.ProduceDate)
+            {
                 return Error.Failure(description: "there is a product with this email and produce date ");
+            }
         }
 
+        Map(request, product);
 
-
-        product = _mapper.Map<Product>(request);
         _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync();
+        _chacheService.RemoveData("products");
         return product;
 
+    }
+
+    private static void Map(EditProductCommand request, Product product)
+    {
+        product.IsAvailable = request.IsAvailable;
+        product.ProduceDate = request.ProduceDate;
+        product.Name = request.Name;
+        product.ManufactureEmail = request.ManufactureEmail;
+        product.ManufacturePhone = request.ManufacturePhone;
     }
 }

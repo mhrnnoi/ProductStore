@@ -12,12 +12,15 @@ public class DeleteAccountCommandHandler :
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICacheService _chacheService;
 
     public DeleteAccountCommandHandler(IUnitOfWork unitOfWork,
-                                       UserManager<IdentityUser> userManager)
+                                       UserManager<IdentityUser> userManager,
+                                       ICacheService chacheService)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _chacheService = chacheService;
     }
 
 
@@ -26,17 +29,17 @@ public class DeleteAccountCommandHandler :
 
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
-            return Error.Failure(description : "Bad Credential");
+            return Error.Failure(description: "Bad Credential");
 
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!isPasswordCorrect)
-            return Error.Failure(description : "Bad Credential");
+            return Error.Failure(description: "Bad Credential");
 
         var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
             return FailToDelete(result);
 
-
+        _chacheService.RemoveData("products");
         await _unitOfWork.SaveChangesAsync();
         return true;
 

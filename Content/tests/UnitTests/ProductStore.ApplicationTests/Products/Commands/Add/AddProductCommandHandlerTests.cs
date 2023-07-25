@@ -18,6 +18,8 @@ public class AddProductCommandHandlerTests
     private readonly AddProductCommandHandler _commandHandler;
     private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
     private readonly Mock<IUserStore<IdentityUser>> _userStoreMock;
+        private readonly Mock<ICacheService> _chacheServiceMock;
+
 
     public AddProductCommandHandlerTests()
     {
@@ -25,6 +27,7 @@ public class AddProductCommandHandlerTests
         _mapperMock = new();
         _unitOfWorkMock = new();
         _userStoreMock = new();
+        _chacheServiceMock = new();
 
         _userManagerMock = new(_userStoreMock.Object, null, null, null, null, null, null, null, null);
 
@@ -39,7 +42,8 @@ public class AddProductCommandHandlerTests
         _commandHandler = new AddProductCommandHandler(_unitOfWorkMock.Object,
                                                        _productRepositoryMock.Object,
                                                        _mapperMock.Object,
-                                                       _userManagerMock.Object);
+                                                       _userManagerMock.Object,
+                                                        _chacheServiceMock.Object);
     }
 
 
@@ -63,6 +67,8 @@ public class AddProductCommandHandlerTests
         _productRepositoryMock.Setup(x => x.Add(product));
         _unitOfWorkMock.Setup(x => x.SaveChangesAsync())
                         .Returns(Task.CompletedTask);
+        _chacheServiceMock.Setup(x => x.RemoveData("products"));
+              
 
         //Act
         var result = await _commandHandler.Handle(_command, default);
@@ -75,6 +81,8 @@ public class AddProductCommandHandlerTests
         _productRepositoryMock.Verify(x => x.IsEmailAndDateUniqueAsync(_command.ManufactureEmail,
                                                                 _command.ProduceDate), Times.Once);
         _userManagerMock.Verify(x => x.FindByIdAsync(_command.UserId), Times.Once);
+        _chacheServiceMock.Verify(x => x.RemoveData("products"),
+                                     Times.Once);
     }
     [Fact]
     public async Task Handle_ShouldReturnBadRequest_WhenNoUniqueEmailAndDateAsync()
