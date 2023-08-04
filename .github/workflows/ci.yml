@@ -29,7 +29,4 @@ jobs:
     - name: Test
       working-directory: ./Content/
       run: dotnet test --no-build --verbosity normal
-  
-  publish:
-    needs: build
  
