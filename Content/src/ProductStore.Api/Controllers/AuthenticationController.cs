@@ -16,42 +16,43 @@ namespace ProductStore.Api.Controllers;
 public class AuthenticationController : ApiController
 {
     private readonly IMapper _mapper;
-    private readonly IMediator _mediatR;
+    private readonly ISender _sender;
 
-    public AuthenticationController(IMediator mediatR,
-                                    IMapper mapper)
+
+    public AuthenticationController(IMapper mapper,
+                                    ISender sender)
     {
-        _mediatR = mediatR;
         _mapper = mapper;
+        _sender = sender;
     }
 
     [HttpPost]
     [ServiceFilter(typeof(RegisterActionFilterAttribute))]
 
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<RegisterCommand>(request);
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
     }
 
     [HttpPost]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<LoginCommand>(request);
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
     }
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> DeleteAccountAsync([FromBody] DeleteAccountRequest request)
+    public async Task<IActionResult> DeleteAccountAsync([FromBody] DeleteAccountRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<DeleteAccountCommand>(request);
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 

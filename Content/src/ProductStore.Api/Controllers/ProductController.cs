@@ -16,48 +16,48 @@ namespace ProductStore.Api.Controllers;
 public class ProductController : ApiController
 {
     private readonly IMapper _mapper;
-    private readonly IMediator _mediatR;
-    public ProductController(IMediator mediatR,
-                             IMapper mapper)
+    private readonly ISender _sender;
+    public ProductController(IMapper mapper,
+                             ISender sender)
     {
-        _mediatR = mediatR;
         _mapper = mapper;
+        _sender = sender;
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
+    public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request, CancellationToken cancellationToken)
     {
 
         var userId = GetUserId(User.Claims);
-        
+
         var command = _mapper.Map<AddProductCommand>(request);
         command = command with { UserId = userId };
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
     }
 
     [HttpDelete("{productId}")]
-    public async Task<IActionResult> DeleteProductAsync(int productId)
+    public async Task<IActionResult> DeleteProductAsync(int productId, CancellationToken cancellationToken)
     {
 
         var userId = GetUserId(User.Claims);
         var command = new DeleteProductCommand(userId, productId);
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request)
+    public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request, CancellationToken cancellationToken)
     {
 
         var userId = GetUserId(User.Claims);
         var command = _mapper.Map<EditProductCommand>(request);
         command = command with { UserId = userId };
-        var result = await _mediatR.Send(command);
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
@@ -65,11 +65,11 @@ public class ProductController : ApiController
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllProductsAsync()
+    public async Task<IActionResult> GetAllProductsAsync(CancellationToken cancellationToken)
     {
 
         var query = new GetAllProductsQuery();
-        var result = await _mediatR.Send(query);
+        var result = await _sender.Send(query, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
@@ -77,10 +77,10 @@ public class ProductController : ApiController
 
     [HttpGet("{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetUserProductsByIdAsync(string id)
+    public async Task<IActionResult> GetUserProductsByIdAsync(string id, CancellationToken cancellationToken)
     {
         var query = new GetUserProductsByIdQuery(id);
-        var result = await _mediatR.Send(query);
+        var result = await _sender.Send(query, cancellationToken);
         return result.Match(result => Ok(result),
                              errors => Problem(errors));
 
