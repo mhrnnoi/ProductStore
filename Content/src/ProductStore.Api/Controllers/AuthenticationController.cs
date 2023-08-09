@@ -2,6 +2,7 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProductStore.Api.Filters;
 using ProductStore.Application.Features.Authentication.Commands.DeleteAccount;
 using ProductStore.Application.Features.Authentication.Commands.Login;
 using ProductStore.Application.Features.Authentication.Commands.Register;
@@ -11,6 +12,7 @@ namespace ProductStore.Api.Controllers;
 
 [Route("api/[controller]/[action]")]
 [AllowAnonymous]
+[ServiceFilter(typeof(AuthFilterAttribute))]
 public class AuthenticationController : ApiController
 {
     private readonly IMapper _mapper;

@@ -18,6 +18,7 @@ public static class DependancyInjection
             {
                 options.Filters.Add<GlobalFilter>();
             });
+        services.AddScoped<AuthFilterAttribute>();
 
         services.AddEndpointsApiExplorer();
 
