@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using ProductStore.Api.Filters;
 using ProductStore.Infrastructure.Persistence.DataContext;
