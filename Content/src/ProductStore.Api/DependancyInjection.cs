@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ProductStore.Api.Filters;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -11,7 +14,10 @@ public static class DependancyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
 
-        services.AddControllers();
+        services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalFilter>();
+            });
 
         services.AddEndpointsApiExplorer();
 

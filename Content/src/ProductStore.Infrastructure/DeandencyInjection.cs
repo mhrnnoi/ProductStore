@@ -72,6 +72,7 @@ public static class depandencyInjection
                                                       .CreateLogger();
         loggingBuilder.ClearProviders();
         loggingBuilder.AddSerilog(logger);
+        
     }
 
     private static Action<AuthenticationOptions> AuthScheme()
