@@ -26,6 +26,8 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
+    [ServiceFilter(typeof(RegisterActionFilterAttribute))]
+
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);

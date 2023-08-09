@@ -4,8 +4,18 @@ namespace ProductStore.Api.Filters;
 
 public class RegisterActionFilterAttribute : Attribute, IAsyncActionFilter
 {
-    public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    private readonly ILogger<AuthFilterAttribute> _logger;
+    public RegisterActionFilterAttribute(ILogger<AuthFilterAttribute> logger)
     {
-        throw new NotImplementedException();
+        _logger = logger;
+    }
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        _logger.LogInformation("an attempt was made to register a user");
+        await next();
+        _logger.LogInformation("finished registration process");
+
+
+
     }
 }
