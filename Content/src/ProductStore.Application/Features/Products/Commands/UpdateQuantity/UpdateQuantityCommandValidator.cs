@@ -1,12 +1,12 @@
 using FluentValidation;
 
-namespace ProductStore.Application.Features.Products.Commands.Edit;
+namespace ProductStore.Application.Features.Products.Commands.UpdateQuantity;
 
-public class EditProductCommandValidator :
-                 AbstractValidator<EditProductCommand>
+public class UpdateQuantityCommandValidator :
+                 AbstractValidator<UpdateQuantityCommand>
 {
 
-    public EditProductCommandValidator()
+    public UpdateQuantityCommandValidator()
     {
         RuleFor(x => x.UserId).NotEmpty()
                               .WithMessage("something went wrong.. maybe you need to login again");
@@ -16,10 +16,6 @@ public class EditProductCommandValidator :
         RuleFor(x => x.quantity).NotEmpty()
                                 .GreaterThanOrEqualTo(0)
                                 .WithMessage("quantity can't be below zero.");
-
-        RuleFor(x => x.price).NotEmpty()
-                             .GreaterThanOrEqualTo(0)
-                             .WithMessage("Plz enter valid price");
 
     }
 }

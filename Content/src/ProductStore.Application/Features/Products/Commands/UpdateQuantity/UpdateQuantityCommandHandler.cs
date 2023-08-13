@@ -6,10 +6,10 @@ using ProductStore.Domain.Common.Errors;
 using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
-namespace ProductStore.Application.Features.Products.Commands.Edit;
+namespace ProductStore.Application.Features.Products.Commands.UpdateQuantity;
 
-public class EditProductCommandHandler :
-                    IRequestHandler<EditProductCommand,
+public class UpdateQuantityCommandHandler :
+                    IRequestHandler<UpdateQuantityCommand,
                                     ErrorOr<Product>>
 {
     private readonly IProductRepository _productRepository;
@@ -19,7 +19,7 @@ public class EditProductCommandHandler :
     private readonly ICacheService _chacheService;
 
 
-    public EditProductCommandHandler(IUnitOfWork unitOfWork,
+    public UpdateQuantityCommandHandler(IUnitOfWork unitOfWork,
                                     IProductRepository productRepository,
                                     IMapper mapper,
                                     UserManager<IdentityUser> userManager,
@@ -33,7 +33,7 @@ public class EditProductCommandHandler :
     }
 
 
-    public async Task<ErrorOr<Product>> Handle(EditProductCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Product>> Handle(UpdateQuantityCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
@@ -45,19 +45,25 @@ public class EditProductCommandHandler :
         if (product is null)
             return Errors.Product.UserDosentHaveTheProduct;
 
-        product =  Edit(request, product);
+        var updateQuantityRes = UpdateQuantity(request, product);
 
-        _productRepository.Update(product);
+        if (updateQuantityRes.IsError)
+            return updateQuantityRes.FirstError;
+
+        _productRepository.Update(updateQuantityRes.Value);
         await _unitOfWork.SaveChangesAsync();
         _chacheService.RemoveData("products");
-        return product;
+        return updateQuantityRes.Value;
 
     }
 
-    private static Product Edit(EditProductCommand request, Product product)
+    private static ErrorOr<Product> UpdateQuantity(UpdateQuantityCommand request, Product product)
     {
-        product =  product.UpdateQuantity(request.quantity);
-        return product.UpdatePrice(request.price);
+        var updateQuantityRes = product.UpdateQuantity(request.quantity);
+
+        if (updateQuantityRes.IsError)
+            return Errors.Product.QuantityLowerThanZero;
+        return updateQuantityRes.Value;
     }
 
 

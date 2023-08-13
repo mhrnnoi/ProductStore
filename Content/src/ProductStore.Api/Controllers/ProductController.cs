@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductStore.Application.Features.Products.Commands.Add;
 using ProductStore.Application.Features.Products.Commands.Delete;
-using ProductStore.Application.Features.Products.Commands.Edit;
+using ProductStore.Application.Features.Products.Commands.UpdateQuantity;
+using ProductStore.Application.Features.Products.Commands.UpdatePrice;
 using ProductStore.Application.Features.Products.Queries.GetAll;
 using ProductStore.Application.Features.Products.Queries.GetUserProductsById;
 using ProductStore.Contracts.Products.Requests;
@@ -51,11 +52,23 @@ public class ProductController : ApiController
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditProductAsync(EditProductRequest request)
+    public async Task<IActionResult> UpdatePriceAsync(UpdatePriceRequest request)
     {
 
         var userId = GetUserId(User.Claims);
-        var command = _mapper.Map<EditProductCommand>(request);
+        var command = _mapper.Map<UpdatePriceCommand>(request);
+        command = command with { UserId = userId };
+        var result = await _mediatR.Send(command);
+        return result.Match(result => Ok(result),
+                             errors => Problem(errors));
+
+    }
+    [HttpPut]
+    public async Task<IActionResult> UpdateQuantityAsync(UpdateQuantityRequest request)
+    {
+
+        var userId = GetUserId(User.Claims);
+        var command = _mapper.Map<UpdateQuantityCommand>(request);
         command = command with { UserId = userId };
         var result = await _mediatR.Send(command);
         return result.Match(result => Ok(result),

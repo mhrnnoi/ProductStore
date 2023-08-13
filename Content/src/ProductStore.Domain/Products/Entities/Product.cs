@@ -22,13 +22,17 @@ public sealed class Product : Entity
         Price = price;
     }
 
-    public Product UpdateQuantity(int quantity)
+    public ErrorOr<Product> UpdateQuantity(int quantity)
     {
+        if (quantity < 0)
+            return Errors.Product.QuantityLowerThanZero;
         this.Quantity = quantity;
         return this;
     }
-    public Product UpdatePrice(decimal price)
+    public ErrorOr<Product> UpdatePrice(decimal price)
     {
+        if (price < 0)
+            return Errors.Product.PriceLowerThanZero;
         this.Price = price;
         return this;
     }
@@ -39,17 +43,13 @@ public sealed class Product : Entity
                                  decimal price)
     {
         if (quantity < 0)
-        {
-            return Errors.Product.
-        }
+            return Errors.Product.QuantityLowerThanZero;
         if (price < 0)
-        {
-            
-        }
-        if (userId.Length < 50)
-        {
-            
-        }
+            return Errors.Product.PriceLowerThanZero;
+        if (string.IsNullOrWhiteSpace(userId) || userId.Length < 36)
+            return Errors.Product.UserIdMinimumCharacter;
+        if (string.IsNullOrWhiteSpace(name) || name.Length < 2)
+            return Errors.Product.NameMinimumCharacter;
 
 
         return new Product(userId,
