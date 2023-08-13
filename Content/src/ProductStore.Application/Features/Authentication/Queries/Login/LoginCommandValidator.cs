@@ -1,11 +1,11 @@
 using FluentValidation;
 
-namespace ProductStore.Application.Features.Authentication.Commands.Login;
+namespace ProductStore.Application.Features.Authentication.Queries.Login;
 
-public class LoginCommandValidator : AbstractValidator<LoginCommand>
+public class LoginQueryValidator : AbstractValidator<LoginQuery>
 {
 
-    public LoginCommandValidator()
+    public LoginQueryValidator()
     {
         RuleFor(x => x.Email).NotEmpty()
                              .EmailAddress()

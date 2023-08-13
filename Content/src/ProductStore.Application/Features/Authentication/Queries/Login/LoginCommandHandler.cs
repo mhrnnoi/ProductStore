@@ -7,31 +7,28 @@ using ProductStore.Application.Features.Authentication.Common;
 using ProductStore.Application.Interfaces.Services;
 using ProductStore.Domain.Abstractions;
 
-namespace ProductStore.Application.Features.Authentication.Commands.Login;
+namespace ProductStore.Application.Features.Authentication.Queries.Login;
 
 public class LoginCommandHandler :
-                    IRequestHandler<LoginCommand,
+                    IRequestHandler<LoginQuery,
                                     ErrorOr<AuthResult>>
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtGenerator _jwtGenerator;
 
-    public LoginCommandHandler(IUnitOfWork unitOfWork,
-                               UserManager<IdentityUser> userManager,
+    public LoginCommandHandler(UserManager<IdentityUser> userManager,
                                IMapper mapper,
                                IJwtGenerator jwtGenerator
                                )
     {
-        _unitOfWork = unitOfWork;
         _userManager = userManager;
         _mapper = mapper;
         _jwtGenerator = jwtGenerator;
     }
 
 
-    public async Task<ErrorOr<AuthResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
 
@@ -45,7 +42,6 @@ public class LoginCommandHandler :
 
         var token = _jwtGenerator.GenerateToken(managedUser);
 
-        await _unitOfWork.SaveChangesAsync();
         var authResult = _mapper.Map<AuthResult>(managedUser);
         authResult = authResult with { Token = token };
         return authResult;
