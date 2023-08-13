@@ -25,7 +25,7 @@ public class ProductController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProductAsync([FromBody] AddProductRequest request)
+    public async Task<IActionResult> AddProductAsync(AddProductRequest request)
     {
 
         var userId = GetUserId(User.Claims);
@@ -51,7 +51,7 @@ public class ProductController : ApiController
     }
 
     [HttpPut]
-    public async Task<IActionResult> EditProductAsync([FromBody] EditProductRequest request)
+    public async Task<IActionResult> EditProductAsync(EditProductRequest request)
     {
 
         var userId = GetUserId(User.Claims);

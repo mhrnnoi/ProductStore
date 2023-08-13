@@ -2,7 +2,7 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Common.Errors;
 using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
@@ -43,16 +43,18 @@ public class AddProductCommandHandler :
         if (product is not null)
             return Errors.Product.NameAlreadyExist;
 
-        product = Product.Create(request.UserId,
-                                 request.Name,
-                                 request.quantity,
-                                 request.price);
+        var productOrError = Product.Create(request.UserId,
+                                            request.Name,
+                                            request.quantity,
+                                            request.price);
+        if (productOrError.IsError)
+            return productOrError.FirstError;
 
-        _productRepository.Add(product);
+        _productRepository.Add(productOrError.Value);
         await _unitOfWork.SaveChangesAsync();
         _chacheService.RemoveData("products");
 
-        return product;
+        return productOrError.Value;
 
     }
 

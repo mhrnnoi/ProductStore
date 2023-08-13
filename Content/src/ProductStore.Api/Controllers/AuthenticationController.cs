@@ -24,7 +24,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
     {
         var command = _mapper.Map<RegisterCommand>(request);
         var result = await _mediatR.Send(command);
@@ -34,7 +34,7 @@ public class AuthenticationController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
+    public async Task<IActionResult> LoginAsync(LoginRequest request)
     {
         var query = _mapper.Map<LoginQuery>(request);
         var result = await _mediatR.Send(query);
@@ -44,7 +44,7 @@ public class AuthenticationController : ApiController
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> DeleteAccountAsync([FromBody] DeleteAccountRequest request)
+    public async Task<IActionResult> DeleteAccountAsync(DeleteAccountRequest request)
     {
         var command = _mapper.Map<DeleteAccountCommand>(request);
         var result = await _mediatR.Send(command);

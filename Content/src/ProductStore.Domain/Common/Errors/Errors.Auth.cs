@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace ProductStore.Application.Common.Errors;
+namespace ProductStore.Domain.Common.Errors;
 
 public static partial class Errors
 {

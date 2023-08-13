@@ -1,7 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Common.Errors;
 using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.Application.Features.Authentication.Commands.DeleteAccount;

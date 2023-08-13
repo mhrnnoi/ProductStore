@@ -1,9 +1,16 @@
+using ErrorOr;
+using ProductStore.Domain.Common.Errors;
 using ProductStore.Domain.Primitives;
 
 namespace ProductStore.Domain.Products.Entities;
 
 public sealed class Product : Entity
 {
+    public string UserId { get; }
+    public string Name { get; }
+    public int Quantity { get; private set; }
+    public decimal Price { get; private set; }
+
     private Product(string userId,
                    string name,
                    int quantity,
@@ -14,10 +21,6 @@ public sealed class Product : Entity
         Quantity = quantity;
         Price = price;
     }
-    public string UserId { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public int Quantity { get; private set; }
-    public decimal Price { get; private set; }
 
     public Product UpdateQuantity(int quantity)
     {
@@ -30,11 +33,24 @@ public sealed class Product : Entity
         return this;
     }
 
-    public static Product Create(string userId,
+    public static ErrorOr<Product> Create(string userId,
                                  string name,
                                  int quantity,
                                  decimal price)
     {
+        if (quantity < 0)
+        {
+            return Errors.Product.
+        }
+        if (price < 0)
+        {
+            
+        }
+        if (userId.Length < 50)
+        {
+            
+        }
+
 
         return new Product(userId,
                            name,

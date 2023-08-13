@@ -2,10 +2,9 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Common.Errors;
 using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
-
+using ProductStore.Domain.Common.Errors;
 namespace ProductStore.Application.Features.Products.Queries.GetUserProductsById;
 
 public class GetUserProductsByIdQueryHandler : IRequestHandler<GetUserProductsByIdQuery, ErrorOr<List<Product>>>

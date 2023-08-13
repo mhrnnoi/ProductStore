@@ -2,7 +2,7 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Common.Errors;
 using ProductStore.Application.Features.Authentication.Common;
 using ProductStore.Application.Interfaces.Services;
 using ProductStore.Domain.Abstractions;
