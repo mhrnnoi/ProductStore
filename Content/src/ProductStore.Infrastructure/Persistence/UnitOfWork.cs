@@ -1,4 +1,4 @@
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Infrastructure.Persistence.DataContext;
 
 namespace ProductStore.Infrastructure.Persistence;

@@ -7,14 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Application.Interfaces.Services;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Infrastructure.Mapping;
 using ProductStore.Infrastructure.Persistence;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using ProductStore.Infrastructure.Services;
 using Serilog;
-using Serilog.Events;
 
 namespace ProductStore.Infrastructure;
 

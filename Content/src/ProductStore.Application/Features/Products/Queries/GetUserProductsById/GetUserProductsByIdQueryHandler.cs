@@ -2,7 +2,8 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Queries.GetUserProductsById;
@@ -26,7 +27,7 @@ public class GetUserProductsByIdQueryHandler : IRequestHandler<GetUserProductsBy
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.NotFound(description : "User With this id is not exist..");
+            return Errors.User.UserNotExist;
 
         return await _productRepository.GetUserProductsAsync(request.UserId);
 

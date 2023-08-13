@@ -3,8 +3,8 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using ProductStore.Application.Features.Authentication.Common;
-using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Application.Interfaces.Services;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.Application.Features.Authentication.Commands.Register;
 
@@ -52,7 +52,7 @@ public class RegisterCommandHandler :
     private static Error ReturnRegisterationFailure(IdentityResult result)
     {
         var firstError = result.Errors.First();
-        return Error.Failure(description: firstError.Description,
+        return Error.Validation(description: firstError.Description,
                              code: firstError.Code);
     }
 }

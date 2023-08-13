@@ -2,7 +2,8 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Commands.Edit;
@@ -36,24 +37,15 @@ public class EditProductCommandHandler :
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.NotFound(description: "something went wrong.. maybe you need to login again");
+            return Errors.User.UserNotExist;
 
         var product = await _productRepository.GetUserProductByIdAsync(request.UserId,
                                                                             request.Id);
 
         if (product is null)
-            return Error.NotFound(description: "product with this id is not exist in your product list..");
+            return Errors.Product.UserDosentHaveTheProduct;
 
-        var isUniqueByEmailAndDate = await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail, request.ProduceDate);
-        if (!isUniqueByEmailAndDate)
-        {
-            if (request.ManufactureEmail != product.ManufactureEmail && request.ProduceDate != product.ProduceDate)
-            {
-                return Error.Failure(description: "there is a product with this email and produce date ");
-            }
-        }
-
-        Map(request, product);
+        product =  Edit(request, product);
 
         _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync();
@@ -62,12 +54,11 @@ public class EditProductCommandHandler :
 
     }
 
-    private static void Map(EditProductCommand request, Product product)
+    private static Product Edit(EditProductCommand request, Product product)
     {
-        product.IsAvailable = request.IsAvailable;
-        product.ProduceDate = request.ProduceDate;
-        product.Name = request.Name;
-        product.ManufactureEmail = request.ManufactureEmail;
-        product.ManufacturePhone = request.ManufacturePhone;
+        product =  product.UpdateQuantity(request.quantity);
+        return product.UpdatePrice(request.price);
     }
+
+
 }

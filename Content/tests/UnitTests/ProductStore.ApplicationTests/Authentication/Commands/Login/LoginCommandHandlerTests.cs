@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using ProductStore.Application.Features.Authentication.Commands.Login;
 using ProductStore.Application.Features.Authentication.Common;
-using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Application.Interfaces.Services;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.ApplicationTests.Authentication.Login;
 

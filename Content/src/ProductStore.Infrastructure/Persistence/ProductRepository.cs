@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 using ProductStore.Infrastructure.Persistence.DataContext;
 
@@ -23,21 +23,9 @@ public class ProductRepository : IProductRepository
 
     }
 
-    public async Task<Product?> GetByIdAsync(int id)
+    public async Task<Product?> GetByIdAsync(string id)
     {
         return await _context.FirstOrDefaultAsync(x => x.Id == id);
-    }
-
-    public async Task<bool> IsEmailAndDateUniqueAsync(string email, DateTime date)
-    {
-        var isNotUnique = await _context.AnyAsync(
-                x => x.ManufactureEmail == email &&
-                        x.ProduceDate.Date == date.Date);
-
-        if (isNotUnique)
-            return false;
-
-        return true;
     }
 
     public void Remove(Product entity)
@@ -60,9 +48,14 @@ public class ProductRepository : IProductRepository
     }
 
 
-    public async Task<Product?> GetUserProductByIdAsync(string userId, int productId)
+    public async Task<Product?> GetUserProductByIdAsync(string userId, string productId)
     {
         return await _context.FirstOrDefaultAsync(x => x.UserId == userId &&
                                                     x.Id == productId);
+    }
+
+    public async Task<Product?> GetProductByNameAsync(string name)
+    {
+        return await _context.FirstOrDefaultAsync(x => x.Name == name);
     }
 }

@@ -1,8 +1,8 @@
 using ErrorOr;
-using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.Application.Features.Authentication.Commands.DeleteAccount;
 
@@ -13,27 +13,29 @@ public class DeleteAccountCommandHandler :
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _chacheService;
-    private readonly IUserRepository _userRepository;
 
 
     public DeleteAccountCommandHandler(IUnitOfWork unitOfWork,
                                        UserManager<IdentityUser> userManager,
-                                       ICacheService chacheService,
-                                       IUserRepository userRepository)
+                                       ICacheService chacheService)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _chacheService = chacheService;
-        _userRepository = userRepository;
     }
 
 
     public async Task<ErrorOr<bool>> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
 
-        var user = await _userRepository.LoginAsync(request.Email, request.Password);
+        var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
-            return Error.Failure(description: "Bad Credential");
+            return Errors.Auth.InvalidCred;
+
+        var isPasswordValid = await _userManager.CheckPasswordAsync(user,
+                                                             request.Password);
+        if (!isPasswordValid)
+            return Errors.Auth.InvalidCred;
 
         var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
@@ -49,7 +51,7 @@ public class DeleteAccountCommandHandler :
     private static ErrorOr<bool> FailToDelete(IdentityResult result)
     {
         var firstError = result.Errors.First();
-        return Error.Failure(description: firstError.Description,
+        return Error.Validation(description: firstError.Description,
                                  code: firstError.Code);
     }
 }

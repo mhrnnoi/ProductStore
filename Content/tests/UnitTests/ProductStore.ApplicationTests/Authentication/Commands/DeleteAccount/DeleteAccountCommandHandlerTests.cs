@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ProductStore.Application.Features.Authentication.Commands.DeleteAccount;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.ApplicationTests.Authentication.DeleteAccount;
 

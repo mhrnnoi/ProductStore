@@ -4,7 +4,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using ProductStore.Application.Features.Products.Commands.Add;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.ApplicationTests.Products.Commands.Add;

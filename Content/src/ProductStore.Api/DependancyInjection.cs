@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
+using ProductStore.Api.Common.Errors;
 using ProductStore.Infrastructure.Persistence.DataContext;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -12,6 +14,7 @@ public static class DependancyInjection
     {
 
         services.AddControllers();
+        services.AddSingleton<ProblemDetailsFactory, ProductStoreProblemDetailsFactory>();
 
         services.AddEndpointsApiExplorer();
 

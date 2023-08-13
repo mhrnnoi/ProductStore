@@ -39,7 +39,7 @@ public class ProductController : ApiController
     }
 
     [HttpDelete("{productId}")]
-    public async Task<IActionResult> DeleteProductAsync(int productId)
+    public async Task<IActionResult> DeleteProductAsync(string productId)
     {
 
         var userId = GetUserId(User.Claims);

@@ -2,7 +2,8 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Abstractions;
 using ProductStore.Domain.Products.Entities;
 
 namespace ProductStore.Application.Features.Products.Commands.Add;
@@ -16,7 +17,6 @@ public class AddProductCommandHandler :
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICacheService _chacheService;
-
 
     public AddProductCommandHandler(IUnitOfWork unitOfWork,
                                     IProductRepository productRepository,
@@ -37,19 +37,16 @@ public class AddProductCommandHandler :
 
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.NotFound(description: "something went wrong.. maybe you need to login again");
+            return Errors.User.UserNotExist;
 
-        var isUniqueByEmailAndDate = await _productRepository.IsEmailAndDateUniqueAsync(request.ManufactureEmail,
-                                                                                        request.ProduceDate);
-        if (!isUniqueByEmailAndDate)
-            return Error.Failure(description: "there is a product with this email and produce date ");
-            
-        var product = Product.Create(request.UserId,
-                                     request.IsAvailable,
-                                     request.ManufactureEmail,
-                                     request.ManufacturePhone,
-                                     request.ProduceDate,
-                                     request.Name);
+        var product = await _productRepository.GetProductByNameAsync(request.Name);
+        if (product is not null)
+            return Errors.Product.NameAlreadyExist;
+
+        product = Product.Create(request.UserId,
+                                 request.Name,
+                                 request.quantity,
+                                 request.price);
 
         _productRepository.Add(product);
         await _unitOfWork.SaveChangesAsync();
@@ -58,4 +55,5 @@ public class AddProductCommandHandler :
         return product;
 
     }
+
 }

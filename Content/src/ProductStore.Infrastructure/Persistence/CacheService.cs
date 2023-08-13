@@ -1,9 +1,6 @@
-
 using System.Text.Json;
-using Microsoft.Extensions.Options;
-using ProductStore.Application.Interfaces.Persistence;
 using ProductStore.Application.Interfaces.Services;
-using ProductStore.Infrastructure.Services;
+using ProductStore.Domain.Abstractions;
 using StackExchange.Redis;
 
 namespace ProductStore.Infrastructure.Persistence;

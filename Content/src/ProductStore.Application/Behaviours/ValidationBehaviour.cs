@@ -1,7 +1,7 @@
 using ErrorOr;
 using FluentValidation;
 using MediatR;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.Application.Behaviours;
 

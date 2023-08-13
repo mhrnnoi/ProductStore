@@ -12,19 +12,13 @@ public class AddProductCommandValidator :
                               .WithMessage("something went wrong.. maybe you need to login again");
 
 
-        RuleFor(x => x.IsAvailable).NotNull()
-                                   .WithMessage("Availability must be specified with true or false.")
-                                   .Must(x => x == true || x == false);
-        RuleFor(x => x.ManufactureEmail).NotEmpty()
-                                        .EmailAddress()
-                                        .WithMessage("Plz enter valid email.");
+        RuleFor(x => x.quantity).NotEmpty()
+                                .GreaterThanOrEqualTo(0)
+                                .WithMessage("quantity can't be below zero.");
 
-        RuleFor(x => x.ManufacturePhone).NotEmpty()
-                                        .MinimumLength(6)
-                                        .WithMessage("Plz enter valid Phone number.");
-
-        RuleFor(x => x.ProduceDate).NotEmpty()
-                                   .WithMessage("ProduceDate is required.");
+        RuleFor(x => x.price).NotEmpty()
+                             .GreaterThanOrEqualTo(0)
+                             .WithMessage("Plz enter valid price");
 
         RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required.");
     }

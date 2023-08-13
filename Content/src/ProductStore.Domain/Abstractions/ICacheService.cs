@@ -1,4 +1,4 @@
-namespace ProductStore.Application.Interfaces.Persistence;
+namespace ProductStore.Domain.Abstractions;
 
 public interface ICacheService
 {

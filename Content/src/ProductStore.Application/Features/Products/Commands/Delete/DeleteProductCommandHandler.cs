@@ -2,7 +2,8 @@ using ErrorOr;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using ProductStore.Application.Interfaces.Persistence;
+using ProductStore.Application.Common.Errors;
+using ProductStore.Domain.Abstractions;
 
 namespace ProductStore.Application.Features.Products.Commands.Delete;
 
@@ -36,7 +37,7 @@ public class DeleteProductCommandHandler :
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null)
-            return Error.NotFound(description: "something went wrong.. maybe you need to login again");
+            return Errors.User.UserNotExist;
 
 
 
@@ -44,7 +45,7 @@ public class DeleteProductCommandHandler :
                                                                        request.ProductId);
 
         if (product is null)
-            return Error.NotFound(description: "product with this id is not exist in your product list..");
+            return Errors.Product.UserDosentHaveTheProduct;
 
         _productRepository.Remove(product);
         await _unitOfWork.SaveChangesAsync();
